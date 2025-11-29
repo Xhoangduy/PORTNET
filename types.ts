@@ -1,5 +1,3 @@
-import React from 'react';
-
 export interface ServiceItem {
   id: string;
   title: string;
@@ -10,7 +8,6 @@ export interface ServiceItem {
 export interface TrackingOption {
   id: string;
   label: string;
-  icon?: React.ReactNode;
 }
 
 export interface ContainerData {
