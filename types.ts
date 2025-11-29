@@ -1,3 +1,4 @@
+
 export interface ServiceItem {
   id: string;
   title: string;
@@ -79,4 +80,71 @@ export interface OrderData {
   status: string;
   paymentStatus: string;
   customer: string;
+}
+
+export interface ImportContainer {
+  id: string;
+  containerNo: string;
+  size: string;
+  seal: string;
+  weight: number;
+  vessel: string;
+  status: string;
+  fee: number;
+}
+
+export interface ExportContainer {
+  id: string;
+  bookingNo: string;
+  containerNo: string;
+  size: string;
+  seal: string;
+  weight: number;
+  pod: string; // Port of Discharge
+  fee: number;
+}
+
+export interface EmptyPickupData {
+  id: string;
+  bookingNo: string;
+  type: 'Designated' | 'Non-designated';
+  isoSize: string;
+  quantity: number;
+  fee: number;
+}
+
+export interface EmptyReturnContainer {
+  id: string;
+  operator: string;
+  containerNo: string;
+  isoSize: string;
+  fee: number;
+}
+
+export interface ServiceContainer {
+  id: string;
+  containerNo: string;
+  isoSize: string;
+  location: string;
+  serviceName: string;
+  fee: number;
+}
+
+export interface UnstuffingContainer {
+  id: string;
+  containerNo: string;
+  isoSize: string;
+  commodity: string;
+  unstuffingPlan: string;
+  fee: number;
+}
+
+export interface StuffingContainer {
+  id: string;
+  containerNo: string;
+  isoSize: string;
+  condition: string;
+  commodity: string;
+  stuffingPlan: string;
+  fee: number;
 }
