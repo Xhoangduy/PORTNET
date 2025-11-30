@@ -126,10 +126,10 @@ const TrackingSystem: React.FC<TrackingSystemProps> = ({ initialTool = 'containe
           </div>
           <button 
             onClick={handleSearch}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow-md flex items-center font-bold transition-all h-[52px] hover:shadow-lg active:transform active:scale-95"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow-md flex items-center justify-center font-bold text-sm transition-all h-[52px] hover:shadow-lg active:transform active:scale-95 whitespace-nowrap min-w-[110px]"
           >
             <span className="mr-2">Tra cứu</span>
-            <Search className="w-5 h-5" />
+            <Search className="w-4 h-4" />
           </button>
         </div>
       </div>
