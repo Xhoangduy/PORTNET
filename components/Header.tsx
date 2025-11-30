@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Bell, ChevronDown, User, Layers } from 'lucide-react';
 
@@ -7,7 +8,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
   return (
-    <header className="bg-gradient-to-r from-[#2c7be5] to-[#0f4c81] text-white shadow-md relative z-50">
+    <header className="bg-gradient-to-r from-[#2c7be5] to-[#0f4c81] text-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 h-[70px] flex items-center justify-between">
         
         {/* Left: Brand / Logo */}

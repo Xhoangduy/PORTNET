@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { 
   CreditCard, CheckCircle, ArrowRight, User, Truck, Ship, 
-  FileText, Calendar, Box, Smartphone, ShieldCheck, RefreshCw
+  FileText, Calendar, Box, Smartphone, ShieldCheck, RefreshCw,
+  Info
 } from 'lucide-react';
 
 const EmptyContainerOutOrder: React.FC = () => {
@@ -12,8 +13,10 @@ const EmptyContainerOutOrder: React.FC = () => {
   // Step 1: Info
   const [bookingType, setBookingType] = useState<'specified' | 'unspecified'>('unspecified');
   const [bookingNo, setBookingNo] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [isoSize, setIsoSize] = useState('20DC');
+  const [transportMethod, setTransportMethod] = useState<'truck' | 'barge'>('truck');
   const [ownerInfo, setOwnerInfo] = useState({
     name: '',
     rep: '',
@@ -65,19 +68,24 @@ const EmptyContainerOutOrder: React.FC = () => {
       <div className="animate-fade-in relative">
         {renderProgressBar()}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="flex flex-col xl:flex-row gap-6 items-start h-full">
             
-            {/* COLUMN 1: BOOKING & OWNER INFO */}
-            <div className="lg:col-span-2 space-y-6">
+            {/* LEFT SIDEBAR: INPUTS */}
+            <div className="w-full xl:w-[400px] bg-white rounded-xl shadow-sm border border-teal-100 overflow-hidden flex-shrink-0">
+                <div className="bg-teal-600 p-4 text-white flex justify-between items-center">
+                    <h3 className="font-bold text-sm uppercase">Thông tin lệnh cấp rỗng</h3>
+                    <Box className="w-4 h-4 text-white/80" />
+                </div>
                 
-                {/* 1.1 Booking Info */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="bg-teal-600 p-4 text-white flex justify-between items-center">
-                        <h3 className="font-bold text-sm uppercase">Thông tin Booking</h3>
-                        <FileText className="w-4 h-4 text-white/80" />
-                    </div>
-                    <div className="p-6 space-y-4">
-                        <div className="flex gap-6 mb-2">
+                <div className="p-5 space-y-6">
+                    
+                    {/* BOOKING INFO */}
+                    <div className="space-y-3">
+                        <label className="text-xs font-bold text-gray-500 uppercase flex items-center">
+                            <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-2"></div>
+                            Loại Booking
+                        </label>
+                        <div className="flex gap-4 mb-2 bg-gray-50 p-2 rounded border border-gray-100">
                              <label className="flex items-center cursor-pointer">
                                 <input 
                                     type="radio" 
@@ -85,7 +93,7 @@ const EmptyContainerOutOrder: React.FC = () => {
                                     onChange={() => setBookingType('unspecified')}
                                     className="w-4 h-4 text-teal-600 focus:ring-teal-500"
                                 />
-                                <span className="ml-2 text-sm font-medium text-gray-700">Booking không chỉ định</span>
+                                <span className="ml-2 text-xs font-bold text-gray-700">Chưa chỉ định</span>
                              </label>
                              <label className="flex items-center cursor-pointer">
                                 <input 
@@ -94,153 +102,141 @@ const EmptyContainerOutOrder: React.FC = () => {
                                     onChange={() => setBookingType('specified')}
                                     className="w-4 h-4 text-teal-600 focus:ring-teal-500"
                                 />
-                                <span className="ml-2 text-sm font-medium text-gray-700">Booking chỉ định</span>
+                                <span className="ml-2 text-xs font-bold text-gray-700">Chỉ định số Cont</span>
                              </label>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="col-span-2 md:col-span-1">
-                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Số Booking *</label>
-                                <input 
-                                    type="text" 
-                                    value={bookingNo}
-                                    onChange={(e) => setBookingNo(e.target.value)}
-                                    placeholder="Nhập số booking..."
-                                    className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm uppercase focus:ring-1 focus:ring-teal-500 outline-none"
-                                />
+                        <input 
+                            type="text" 
+                            value={bookingNo}
+                            onChange={(e) => setBookingNo(e.target.value)}
+                            placeholder="Số Booking *"
+                            className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm uppercase focus:ring-1 focus:ring-teal-500 outline-none"
+                        />
+                        
+                        <div className="grid grid-cols-2 gap-3">
+                            <div>
+                                <label className="block text-[10px] text-gray-400 mb-1">Loại Container</label>
+                                <select 
+                                    value={isoSize}
+                                    onChange={(e) => setIsoSize(e.target.value)}
+                                    className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none"
+                                >
+                                    <option value="20DC">20DC</option>
+                                    <option value="40DC">40DC</option>
+                                    <option value="40HC">40HC</option>
+                                    <option value="20RF">20RF</option>
+                                </select>
                             </div>
-                            <div className="col-span-2 md:col-span-1">
-                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Hạn lệnh</label>
-                                <div className="relative">
-                                    <input type="date" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm text-gray-500 focus:ring-teal-500 focus:border-teal-500 outline-none" />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Quantity Selection */}
-                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                             <h4 className="text-xs font-bold text-gray-500 uppercase mb-3 flex items-center">
-                                <Box className="w-3.5 h-3.5 mr-1" /> Yêu cầu cấp rỗng
-                             </h4>
-                             <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-500 mb-1">Loại Container</label>
-                                    <select 
-                                        value={isoSize}
-                                        onChange={(e) => setIsoSize(e.target.value)}
-                                        className="w-full p-2 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none"
+                            <div>
+                                <label className="block text-[10px] text-gray-400 mb-1">Số lượng</label>
+                                <div className="flex items-center">
+                                    <button 
+                                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                        className="w-8 h-[38px] bg-white border border-gray-300 rounded-l flex items-center justify-center hover:bg-gray-100"
                                     >
-                                        <option value="20DC">20DC - Dry Container</option>
-                                        <option value="40DC">40DC - Dry Container</option>
-                                        <option value="40HC">40HC - High Cube</option>
-                                        <option value="20RF">20RF - Reefer</option>
-                                    </select>
+                                        -
+                                    </button>
+                                    <input 
+                                        type="number" 
+                                        value={quantity}
+                                        readOnly
+                                        className="w-full h-[38px] bg-gray-50 border-t border-b border-gray-300 text-center text-sm font-bold"
+                                    />
+                                    <button 
+                                            onClick={() => setQuantity(quantity + 1)}
+                                            className="w-8 h-[38px] bg-white border border-gray-300 rounded-r flex items-center justify-center hover:bg-gray-100"
+                                    >
+                                        +
+                                    </button>
                                 </div>
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-500 mb-1">Số lượng cấp</label>
-                                    <div className="flex items-center">
-                                        <button 
-                                            onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                            className="w-8 h-9 bg-white border border-gray-300 rounded-l flex items-center justify-center hover:bg-gray-100"
-                                        >
-                                            -
-                                        </button>
-                                        <input 
-                                            type="number" 
-                                            value={quantity}
-                                            readOnly
-                                            className="w-full h-9 bg-gray-50 border-t border-b border-gray-300 text-center text-sm font-bold"
-                                        />
-                                        <button 
-                                             onClick={() => setQuantity(quantity + 1)}
-                                             className="w-8 h-9 bg-white border border-gray-300 rounded-r flex items-center justify-center hover:bg-gray-100"
-                                        >
-                                            +
-                                        </button>
-                                    </div>
-                                </div>
-                             </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-[10px] text-gray-400 mb-1">Hạn lệnh</label>
+                            <input 
+                                type="date" 
+                                value={expiryDate}
+                                onChange={(e) => setExpiryDate(e.target.value)}
+                                className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
+                            />
                         </div>
                     </div>
-                </div>
 
-                {/* 1.2 Owner Info */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="bg-gray-50 p-4 border-b border-gray-100 flex justify-between items-center">
-                        <h3 className="font-bold text-gray-700 text-sm uppercase flex items-center">
-                            <User className="w-4 h-4 mr-2 text-teal-600" />
+                    <div className="h-px bg-gray-100"></div>
+
+                    {/* OWNER INFO */}
+                    <div className="space-y-3">
+                        <label className="text-xs font-bold text-gray-500 uppercase flex items-center">
+                            <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-2"></div>
                             Thông tin chủ hàng
-                        </h3>
-                    </div>
-                    <div className="p-6 space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="col-span-2">
-                                <label className="block text-xs font-bold text-gray-500 mb-1">Tên chủ hàng *</label>
-                                <input 
-                                    type="text" 
-                                    value={ownerInfo.name}
-                                    onChange={(e) => setOwnerInfo({...ownerInfo, name: e.target.value})}
-                                    className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 mb-1">Mã số thuế (MST) *</label>
-                                <input 
-                                    type="text" 
-                                    value={ownerInfo.mst}
-                                    onChange={(e) => {
-                                        setOwnerInfo({...ownerInfo, mst: e.target.value});
-                                        setTaxId(e.target.value); // Sync for next step
-                                    }}
-                                    className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 mb-1">Người đại diện</label>
-                                <input 
-                                    type="text" 
-                                    value={ownerInfo.rep}
-                                    onChange={(e) => setOwnerInfo({...ownerInfo, rep: e.target.value})}
-                                    className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 mb-1">Số điện thoại *</label>
-                                <input 
-                                    type="text" 
-                                    value={ownerInfo.phone}
-                                    onChange={(e) => setOwnerInfo({...ownerInfo, phone: e.target.value})}
-                                    className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none"
-                                />
-                            </div>
+                        </label>
+                        <input 
+                            type="text" 
+                            placeholder="Tên chủ hàng *" 
+                            value={ownerInfo.name}
+                            onChange={(e) => setOwnerInfo({...ownerInfo, name: e.target.value})}
+                            className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
+                        />
+                        <input 
+                            type="text" 
+                            placeholder="Mã số thuế *" 
+                            value={ownerInfo.mst}
+                            onChange={(e) => {
+                                setOwnerInfo({...ownerInfo, mst: e.target.value});
+                                setTaxId(e.target.value);
+                            }}
+                            className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
+                        />
+                        <div className="grid grid-cols-2 gap-3">
+                            <input 
+                                type="text" 
+                                placeholder="Người đại diện" 
+                                value={ownerInfo.rep}
+                                onChange={(e) => setOwnerInfo({...ownerInfo, rep: e.target.value})}
+                                className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
+                            />
+                            <input 
+                                type="text" 
+                                placeholder="Số điện thoại" 
+                                value={ownerInfo.phone}
+                                onChange={(e) => setOwnerInfo({...ownerInfo, phone: e.target.value})}
+                                className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
+                            />
                         </div>
                     </div>
-                </div>
 
-            </div>
+                    <div className="h-px bg-gray-100"></div>
 
-            {/* COLUMN 2: SUMMARY & TRANSPORT */}
-            <div className="space-y-6">
-                
-                {/* Transport Method */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="bg-gray-50 p-4 border-b border-gray-100">
-                        <h3 className="font-bold text-gray-700 text-sm uppercase flex items-center">
-                            <Truck className="w-4 h-4 mr-2 text-teal-600" />
+                    {/* TRANSPORT */}
+                    <div className="space-y-3">
+                       <label className="text-xs font-bold text-gray-500 uppercase flex items-center">
+                            <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-2"></div>
                             Phương thức vận chuyển
-                        </h3>
-                    </div>
-                    <div className="p-4">
-                         <div className="flex gap-4">
+                       </label>
+                       <div className="flex gap-4">
                             <label className="flex-1 cursor-pointer">
-                                <input type="radio" name="transport_empty" className="peer sr-only" defaultChecked />
+                                <input 
+                                    type="radio" 
+                                    name="transport_empty" 
+                                    className="peer sr-only" 
+                                    checked={transportMethod === 'truck'}
+                                    onChange={() => setTransportMethod('truck')}
+                                />
                                 <div className="p-3 border border-gray-200 rounded-lg text-center peer-checked:border-teal-500 peer-checked:bg-teal-50 transition-all hover:bg-gray-50">
                                     <Truck className="w-5 h-5 mx-auto mb-1 text-gray-600 peer-checked:text-teal-600" />
                                     <span className="text-xs font-bold text-gray-600 peer-checked:text-teal-700">Xe chủ hàng</span>
                                 </div>
                             </label>
                             <label className="flex-1 cursor-pointer">
-                                <input type="radio" name="transport_empty" className="peer sr-only" />
+                                <input 
+                                    type="radio" 
+                                    name="transport_empty" 
+                                    className="peer sr-only" 
+                                    checked={transportMethod === 'barge'}
+                                    onChange={() => setTransportMethod('barge')}
+                                />
                                 <div className="p-3 border border-gray-200 rounded-lg text-center peer-checked:border-teal-500 peer-checked:bg-teal-50 transition-all hover:bg-gray-50">
                                     <Ship className="w-5 h-5 mx-auto mb-1 text-gray-600 peer-checked:text-teal-600" />
                                     <span className="text-xs font-bold text-gray-600 peer-checked:text-teal-700">Sà lan</span>
@@ -248,38 +244,71 @@ const EmptyContainerOutOrder: React.FC = () => {
                             </label>
                         </div>
                     </div>
+
+                </div>
+            </div>
+
+            {/* RIGHT SIDEBAR: PREVIEW LIST */}
+            <div className="flex-grow w-full bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col min-h-[600px]">
+                
+                {/* Header */}
+                <div className="p-4 border-b border-gray-100 bg-teal-50/30 flex justify-between items-center">
+                     <div className="flex items-center gap-2">
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-100 text-teal-600 text-xs font-bold">5</span>
+                        <h3 className="font-bold text-gray-700 text-sm uppercase">Chi tiết yêu cầu</h3>
+                     </div>
                 </div>
 
-                {/* Estimated Cost */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="p-4 bg-gray-50 border-b border-gray-100">
-                         <h3 className="font-bold text-gray-700 text-sm uppercase">Tạm tính chi phí</h3>
-                    </div>
-                    <div className="p-4 space-y-3">
-                        <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">Đơn giá ({isoSize})</span>
-                            <span className="font-medium">{unitPrice.toLocaleString()} ₫</span>
+                {/* Content */}
+                <div className="flex-grow p-0 overflow-auto bg-gray-50/50">
+                    {!bookingNo ? (
+                        <div className="h-full flex flex-col items-center justify-center text-gray-400 p-10">
+                            <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                                <FileText className="w-10 h-10 opacity-20" />
+                            </div>
+                            <p className="text-sm font-medium text-gray-500">Chưa có thông tin lệnh.</p>
+                            <p className="text-xs text-gray-400 mt-1">Vui lòng nhập số Booking để tiếp tục</p>
                         </div>
-                        <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">Số lượng</span>
-                            <span className="font-medium">x {quantity}</span>
-                        </div>
-                        <div className="border-t border-gray-100 pt-2 flex justify-between items-center">
-                            <span className="font-bold text-gray-800">Tổng cộng</span>
-                            <span className="font-bold text-xl text-teal-600">{totalAmount.toLocaleString()} ₫</span>
-                        </div>
-                        <button 
-                            onClick={() => setCurrentStep(2)}
-                            disabled={!bookingNo}
-                            className={`w-full py-3 rounded-lg font-bold text-sm shadow-md transition-all mt-2 flex items-center justify-center ${
-                                bookingNo ? 'bg-teal-600 hover:bg-teal-700 text-white' : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                            }`}
-                        >
-                            Tiếp theo <ArrowRight className="w-4 h-4 ml-2" />
-                        </button>
-                    </div>
+                    ) : (
+                        <table className="w-full text-sm text-left bg-white">
+                            <thead className="text-xs text-gray-500 uppercase bg-gray-100 border-b border-gray-200 sticky top-0 z-10">
+                                <tr>
+                                    <th className="px-6 py-3">Loại Container</th>
+                                    <th className="px-6 py-3 text-center">Số lượng</th>
+                                    <th className="px-6 py-3 text-right">Đơn giá (VND)</th>
+                                    <th className="px-6 py-3 text-right">Thành tiền (VND)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr className="border-b hover:bg-teal-50 transition-colors bg-white">
+                                    <td className="px-6 py-4 font-bold text-blue-900">{isoSize}</td>
+                                    <td className="px-6 py-4 text-center font-medium">{quantity}</td>
+                                    <td className="px-6 py-4 text-right">{unitPrice.toLocaleString()}</td>
+                                    <td className="px-6 py-4 text-right font-bold text-teal-600">{totalAmount.toLocaleString()}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    )}
                 </div>
 
+                {/* Footer Actions */}
+                <div className="p-4 border-t border-gray-100 bg-white flex justify-between items-center">
+                     <div className="text-xs text-gray-500 flex items-center">
+                         <Info className="w-3.5 h-3.5 mr-1" />
+                         Tổng số lượng: <b className="text-gray-800 ml-1">{quantity}</b> container
+                     </div>
+                     <button 
+                        onClick={() => setCurrentStep(2)}
+                        disabled={!bookingNo}
+                        className={`px-6 py-2.5 rounded-lg font-bold text-sm flex items-center transition-all ${
+                            bookingNo 
+                            ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-md' 
+                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        }`}
+                    >
+                        Tiếp theo <ArrowRight className="w-4 h-4 ml-2" />
+                    </button>
+                </div>
             </div>
         </div>
       </div>
