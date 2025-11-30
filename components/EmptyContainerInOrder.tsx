@@ -85,18 +85,18 @@ const EmptyContainerInOrder: React.FC = () => {
   // Render Progress Bar
   const renderProgressBar = () => (
     <div className="bg-white p-4 mb-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between px-4 md:px-10">
-      <div className={`flex items-center gap-2 ${currentStep >= 1 ? 'text-blue-600' : 'text-gray-400'}`}>
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${currentStep >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>1</div>
+      <div className={`flex items-center gap-2 ${currentStep >= 1 ? 'text-teal-600' : 'text-gray-400'}`}>
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${currentStep >= 1 ? 'bg-teal-600 text-white' : 'bg-gray-200'}`}>1</div>
         <span className="font-medium text-sm hidden sm:inline">Thông tin & Container</span>
       </div>
-      <div className={`flex-1 h-1 mx-2 rounded ${currentStep >= 2 ? 'bg-blue-600' : 'bg-gray-200'}`}></div>
-      <div className={`flex items-center gap-2 ${currentStep >= 2 ? 'text-blue-600' : 'text-gray-400'}`}>
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${currentStep >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>2</div>
+      <div className={`flex-1 h-1 mx-2 rounded ${currentStep >= 2 ? 'bg-teal-600' : 'bg-gray-200'}`}></div>
+      <div className={`flex items-center gap-2 ${currentStep >= 2 ? 'text-teal-600' : 'text-gray-400'}`}>
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${currentStep >= 2 ? 'bg-teal-600 text-white' : 'bg-gray-200'}`}>2</div>
         <span className="font-medium text-sm hidden sm:inline">Tính cước</span>
       </div>
-       <div className={`flex-1 h-1 mx-2 rounded ${currentStep >= 3 ? 'bg-blue-600' : 'bg-gray-200'}`}></div>
-      <div className={`flex items-center gap-2 ${currentStep >= 3 ? 'text-blue-600' : 'text-gray-400'}`}>
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${currentStep >= 3 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>3</div>
+       <div className={`flex-1 h-1 mx-2 rounded ${currentStep >= 3 ? 'bg-teal-600' : 'bg-gray-200'}`}></div>
+      <div className={`flex items-center gap-2 ${currentStep >= 3 ? 'text-teal-600' : 'text-gray-400'}`}>
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${currentStep >= 3 ? 'bg-teal-600 text-white' : 'bg-gray-200'}`}>3</div>
         <span className="font-medium text-sm hidden sm:inline">Thanh toán</span>
       </div>
     </div>
@@ -111,8 +111,8 @@ const EmptyContainerInOrder: React.FC = () => {
         <div className="flex flex-col xl:flex-row gap-6 items-start h-full">
           
           {/* LEFT: ORDER INFO */}
-          <div className="w-full xl:w-[400px] bg-white rounded-xl shadow-sm border border-blue-100 overflow-hidden flex-shrink-0">
-             <div className="bg-orange-500 p-4 text-white flex justify-between items-center">
+          <div className="w-full xl:w-[400px] bg-white rounded-xl shadow-sm border border-teal-100 overflow-hidden flex-shrink-0">
+             <div className="bg-teal-600 p-4 text-white flex justify-between items-center">
                  <h3 className="font-bold text-sm uppercase">Thông tin lệnh hạ rỗng</h3>
                  <Calendar className="w-4 h-4 text-white/80" />
              </div>
@@ -122,7 +122,7 @@ const EmptyContainerInOrder: React.FC = () => {
                 {/* DATE */}
                 <div className="space-y-3">
                    <label className="text-xs font-bold text-gray-500 uppercase flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-orange-500 mr-2"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-2"></div>
                         Hạn trả rỗng
                    </label>
                    <div className="relative">
@@ -130,7 +130,7 @@ const EmptyContainerInOrder: React.FC = () => {
                         type="date" 
                         value={returnDate}
                         onChange={(e) => setReturnDate(e.target.value)}
-                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-orange-500 outline-none" 
+                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
                       />
                    </div>
                 </div>
@@ -140,7 +140,7 @@ const EmptyContainerInOrder: React.FC = () => {
                 {/* OWNER INFO */}
                 <div className="space-y-3">
                     <label className="text-xs font-bold text-gray-500 uppercase flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-orange-500 mr-2"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-2"></div>
                         Thông tin chủ hàng
                    </label>
                    <input 
@@ -148,7 +148,7 @@ const EmptyContainerInOrder: React.FC = () => {
                         placeholder="Tên chủ hàng *" 
                         value={ownerInfo.name}
                         onChange={(e) => setOwnerInfo({...ownerInfo, name: e.target.value})}
-                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-orange-500 outline-none" 
+                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
                    />
                    <div className="grid grid-cols-2 gap-3">
                         <input 
@@ -156,14 +156,14 @@ const EmptyContainerInOrder: React.FC = () => {
                             placeholder="Người đại diện" 
                             value={ownerInfo.rep}
                             onChange={(e) => setOwnerInfo({...ownerInfo, rep: e.target.value})}
-                            className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-orange-500 outline-none" 
+                            className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
                         />
                         <input 
                             type="text" 
                             placeholder="Số điện thoại" 
                             value={ownerInfo.phone}
                             onChange={(e) => setOwnerInfo({...ownerInfo, phone: e.target.value})}
-                            className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-orange-500 outline-none" 
+                            className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
                         />
                    </div>
                    <textarea 
@@ -171,7 +171,7 @@ const EmptyContainerInOrder: React.FC = () => {
                         rows={2} 
                         value={ownerInfo.note}
                         onChange={(e) => setOwnerInfo({...ownerInfo, note: e.target.value})}
-                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-orange-500 outline-none"
+                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none"
                    ></textarea>
                 </div>
 
@@ -180,7 +180,7 @@ const EmptyContainerInOrder: React.FC = () => {
                 {/* TRANSPORT METHOD */}
                 <div className="space-y-3">
                    <label className="text-xs font-bold text-gray-500 uppercase flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-orange-500 mr-2"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-2"></div>
                         Phương tiện vận chuyển
                    </label>
                    <div className="flex gap-4">
@@ -192,9 +192,9 @@ const EmptyContainerInOrder: React.FC = () => {
                                 checked={transportMethod === 'truck'}
                                 onChange={() => setTransportMethod('truck')}
                             />
-                            <div className="p-3 border border-gray-200 rounded-lg text-center peer-checked:border-orange-500 peer-checked:bg-orange-50 transition-all hover:bg-gray-50">
-                                <Truck className="w-5 h-5 mx-auto mb-1 text-gray-600 peer-checked:text-orange-600" />
-                                <span className="text-xs font-bold text-gray-600 peer-checked:text-orange-700">Xe chủ hàng</span>
+                            <div className="p-3 border border-gray-200 rounded-lg text-center peer-checked:border-teal-500 peer-checked:bg-teal-50 transition-all hover:bg-gray-50">
+                                <Truck className="w-5 h-5 mx-auto mb-1 text-gray-600 peer-checked:text-teal-600" />
+                                <span className="text-xs font-bold text-gray-600 peer-checked:text-teal-700">Xe chủ hàng</span>
                             </div>
                         </label>
                         <label className="flex-1 cursor-pointer">
@@ -205,9 +205,9 @@ const EmptyContainerInOrder: React.FC = () => {
                                 checked={transportMethod === 'barge'}
                                 onChange={() => setTransportMethod('barge')}
                             />
-                            <div className="p-3 border border-gray-200 rounded-lg text-center peer-checked:border-orange-500 peer-checked:bg-orange-50 transition-all hover:bg-gray-50">
-                                <Ship className="w-5 h-5 mx-auto mb-1 text-gray-600 peer-checked:text-orange-600" />
-                                <span className="text-xs font-bold text-gray-600 peer-checked:text-orange-700">Sà lan</span>
+                            <div className="p-3 border border-gray-200 rounded-lg text-center peer-checked:border-teal-500 peer-checked:bg-teal-50 transition-all hover:bg-gray-50">
+                                <Ship className="w-5 h-5 mx-auto mb-1 text-gray-600 peer-checked:text-teal-600" />
+                                <span className="text-xs font-bold text-gray-600 peer-checked:text-teal-700">Sà lan</span>
                             </div>
                         </label>
                     </div>
@@ -222,13 +222,13 @@ const EmptyContainerInOrder: React.FC = () => {
              {/* Header */}
              <div className="p-4 border-b border-gray-100 bg-gray-50/30 flex justify-between items-center">
                  <div className="flex items-center gap-2">
-                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold">4</span>
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-100 text-teal-600 text-xs font-bold">4</span>
                     <h3 className="font-bold text-gray-700 text-sm uppercase">Danh sách Container Trả</h3>
                  </div>
                  
                  <button 
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center transition-colors shadow-sm"
+                    className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center transition-colors shadow-sm"
                  >
                     <Plus className="w-3.5 h-3.5 mr-1.5" /> Thêm Container
                  </button>
@@ -255,7 +255,7 @@ const EmptyContainerInOrder: React.FC = () => {
                         </thead>
                         <tbody>
                             {containers.map((cont) => (
-                                <tr key={cont.id} className="border-b hover:bg-orange-50 transition-colors">
+                                <tr key={cont.id} className="border-b hover:bg-teal-50 transition-colors">
                                     <td className="px-4 py-3 font-medium">{cont.operator}</td>
                                     <td className="px-4 py-3 font-bold text-blue-900 font-mono">{cont.containerNo}</td>
                                     <td className="px-4 py-3">{cont.isoSize}</td>
@@ -285,7 +285,7 @@ const EmptyContainerInOrder: React.FC = () => {
                     onClick={() => setCurrentStep(2)}
                     className={`px-6 py-2.5 rounded-lg font-bold text-sm flex items-center transition-all ${
                         containers.length > 0 
-                        ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md' 
+                        ? 'bg-teal-600 text-white hover:bg-teal-700 shadow-md' 
                         : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                     }`}
                  >
@@ -342,7 +342,7 @@ const EmptyContainerInOrder: React.FC = () => {
                         <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-200 rounded">Hủy</button>
                         <button 
                             onClick={handleAddContainer} 
-                            className="px-6 py-2 bg-orange-600 text-white text-sm font-bold rounded hover:bg-orange-700 flex items-center"
+                            className="px-6 py-2 bg-teal-600 text-white text-sm font-bold rounded hover:bg-teal-700 flex items-center"
                         >
                             <Plus className="w-4 h-4 mr-2" /> Thêm vào danh sách
                         </button>
@@ -363,7 +363,7 @@ const EmptyContainerInOrder: React.FC = () => {
              <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
                  <div className="p-6 border-b border-gray-100 bg-gray-50">
                     <h3 className="font-bold text-gray-800 text-lg flex items-center">
-                        <FileText className="w-5 h-5 mr-2 text-blue-600" />
+                        <FileText className="w-5 h-5 mr-2 text-teal-600" />
                         Xác nhận & Tính cước
                     </h3>
                  </div>
@@ -400,13 +400,13 @@ const EmptyContainerInOrder: React.FC = () => {
                         <h4 className="font-bold text-sm uppercase text-gray-500 border-b border-gray-100 pb-2">
                             Tổng hợp chi phí
                         </h4>
-                        <div className="bg-blue-50 p-4 rounded-lg space-y-3">
+                        <div className="bg-teal-50 p-4 rounded-lg space-y-3">
                             <div className="flex justify-between text-sm"><span className="text-gray-600">Số lượng container</span><span className="font-bold">{containers.length}</span></div>
                             <div className="flex justify-between text-sm"><span className="text-gray-600">Phí dịch vụ</span><span className="font-mono">{totalAmount.toLocaleString()} ₫</span></div>
                             <div className="flex justify-between text-sm"><span className="text-gray-600">VAT (8%)</span><span className="font-mono">{(totalAmount * 0.08).toLocaleString()} ₫</span></div>
-                            <div className="border-t border-blue-200 pt-3 flex justify-between items-center">
-                                <span className="text-blue-900 font-bold uppercase">Tổng thanh toán</span>
-                                <span className="text-xl font-bold text-blue-700 font-mono">{(totalAmount * 1.08).toLocaleString()} ₫</span>
+                            <div className="border-t border-teal-200 pt-3 flex justify-between items-center">
+                                <span className="text-teal-900 font-bold uppercase">Tổng thanh toán</span>
+                                <span className="text-xl font-bold text-teal-700 font-mono">{(totalAmount * 1.08).toLocaleString()} ₫</span>
                             </div>
                         </div>
                         <div className="flex flex-col gap-3">
@@ -416,7 +416,7 @@ const EmptyContainerInOrder: React.FC = () => {
                                     <Save className="w-4 h-4 mr-2" /> Lưu (Chưa TT)
                                 </button>
                              </div>
-                             <button onClick={() => setCurrentStep(3)} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg text-sm font-bold shadow-md uppercase">
+                             <button onClick={() => setCurrentStep(3)} className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg text-sm font-bold shadow-md uppercase">
                                  Xác nhận thanh toán
                              </button>
                         </div>
@@ -434,35 +434,35 @@ const EmptyContainerInOrder: React.FC = () => {
              {renderProgressBar()}
              <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
                 <h3 className="font-bold text-gray-800 text-lg flex items-center mb-6">
-                    <CreditCard className="w-6 h-6 mr-2 text-blue-600" />
+                    <CreditCard className="w-6 h-6 mr-2 text-teal-600" />
                     Thanh toán
                 </h3>
                 
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6 flex justify-between items-center">
                     <span className="text-sm font-medium text-gray-600">Số tiền:</span>
-                    <span className="text-xl font-bold text-blue-700 font-mono">{(totalAmount * 1.08).toLocaleString()} ₫</span>
+                    <span className="text-xl font-bold text-teal-700 font-mono">{(totalAmount * 1.08).toLocaleString()} ₫</span>
                 </div>
 
                 <div className="space-y-4">
                     <div>
                         <label className="block text-xs font-bold text-gray-500 mb-1">Số thẻ</label>
-                        <input type="text" placeholder="0000 0000 0000 0000" className="w-full p-3 border rounded-lg font-mono text-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
+                        <input type="text" placeholder="0000 0000 0000 0000" className="w-full p-3 border rounded-lg font-mono text-lg outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500" />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-1">Ngày hết hạn</label>
-                            <input type="text" placeholder="MM/YY" className="w-full p-3 border rounded-lg font-mono outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
+                            <input type="text" placeholder="MM/YY" className="w-full p-3 border rounded-lg font-mono outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500" />
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-1">CVV</label>
-                            <input type="text" placeholder="123" maxLength={3} className="w-full p-3 border rounded-lg font-mono outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
+                            <input type="text" placeholder="123" maxLength={3} className="w-full p-3 border rounded-lg font-mono outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500" />
                         </div>
                     </div>
                 </div>
 
                 <button 
                     onClick={handlePayment}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-lg shadow-md mt-8 transition-colors text-sm uppercase tracking-wide"
+                    className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-lg shadow-md mt-8 transition-colors text-sm uppercase tracking-wide"
                 >
                     Thanh toán ngay
                 </button>
@@ -473,8 +473,8 @@ const EmptyContainerInOrder: React.FC = () => {
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 animate-scale-in">
                         <div className="text-center mb-6">
-                            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Smartphone className="w-8 h-8 text-blue-600" />
+                            <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Smartphone className="w-8 h-8 text-teal-600" />
                             </div>
                             <h3 className="text-lg font-bold text-gray-800">Xác thực OTP</h3>
                             <p className="text-sm text-gray-500 mt-1">Mã xác thực đã được gửi đến SĐT của bạn</p>
@@ -486,14 +486,14 @@ const EmptyContainerInOrder: React.FC = () => {
                                     key={i}
                                     type="text" 
                                     maxLength={1}
-                                    className="w-10 h-12 border border-gray-300 rounded text-center text-xl font-bold focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                                    className="w-10 h-12 border border-gray-300 rounded text-center text-xl font-bold focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
                                 />
                             ))}
                         </div>
 
                         <button 
                             onClick={verifyOtp}
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors"
+                            className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-lg transition-colors"
                         >
                             Xác nhận
                         </button>
@@ -534,7 +534,7 @@ const EmptyContainerInOrder: React.FC = () => {
                   </div>
                    <div className="flex justify-between">
                       <span className="text-gray-500 text-sm">Tổng tiền</span>
-                      <span className="font-bold text-blue-600">{(totalAmount * 1.08).toLocaleString()} ₫</span>
+                      <span className="font-bold text-teal-600">{(totalAmount * 1.08).toLocaleString()} ₫</span>
                   </div>
               </div>
 
@@ -548,7 +548,7 @@ const EmptyContainerInOrder: React.FC = () => {
                   >
                       Tạo lệnh mới
                   </button>
-                  <button className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-md transition-colors">
+                  <button className="px-6 py-3 bg-teal-600 text-white font-bold rounded-lg hover:bg-teal-700 shadow-md transition-colors">
                       Xem E-Ticket
                   </button>
               </div>
