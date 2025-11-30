@@ -88,55 +88,63 @@ const ImportContainerOrder: React.FC = () => {
   // --- VIEW 1: SELECTION (STEPS 1-5) ---
   if (currentStep === 1) {
     return (
-      <div className="animate-fade-in">
+      <div className="animate-fade-in relative">
         {renderProgressBar()}
         
-        <div className="flex flex-col lg:flex-row gap-6 items-start h-full">
+        <div className="flex flex-col xl:flex-row gap-6 items-start h-full">
             
-          {/* LEFT SIDEBAR: STEPS 1, 2, 3 */}
-          <div className="w-full lg:w-[350px] bg-white rounded-xl shadow-sm border border-teal-100 overflow-hidden flex-shrink-0">
+          {/* LEFT SIDEBAR: STEPS 1, 2, 3 - COMPACT DESIGN */}
+          <div className="w-full xl:w-[400px] bg-white rounded-xl shadow-sm border border-teal-100 overflow-hidden flex-shrink-0">
              <div className="bg-teal-600 p-4 text-white flex justify-between items-center">
-                 <h3 className="font-bold text-sm uppercase">Thông tin lệnh</h3>
+                 <h3 className="font-bold text-sm uppercase">Thông tin lệnh giao hàng</h3>
                  <FileText className="w-4 h-4 text-white/80" />
              </div>
              
-             <div className="p-5 space-y-6 max-h-[calc(100vh-250px)] overflow-y-auto">
-                {/* STEP 1 */}
+             <div className="p-5 space-y-4">
+                {/* STEP 1: ORDER INFO */}
                 <div className="space-y-3">
                     <label className="text-xs font-bold text-gray-500 uppercase flex items-center">
                         <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-2"></div>
                         Chi tiết Lệnh
                     </label>
+                    
+                    {/* Bill Type Radio - Compact */}
+                    <div className="flex gap-6 items-center bg-gray-50 p-2 rounded border border-gray-100">
+                        <span className="text-[10px] font-bold text-gray-500 uppercase">Loại Bill:</span>
+                        <label className="flex items-center text-sm cursor-pointer">
+                            <input type="radio" name="billType" className="mr-2 text-teal-600 focus:ring-teal-500" defaultChecked /> 
+                            <span className="font-medium text-gray-700">MASTER</span>
+                        </label>
+                        <label className="flex items-center text-sm cursor-pointer">
+                            <input type="radio" name="billType" className="mr-2 text-teal-600 focus:ring-teal-500" /> 
+                            <span className="font-medium text-gray-700">HOUSE</span>
+                        </label>
+                    </div>
+
+                    {/* Grid for D/O and BL */}
                     <div className="grid grid-cols-2 gap-3">
-                        <div className="col-span-2">
-                             <span className="text-xs text-gray-400 mb-1 block">Master Bill / House Bill</span>
-                             <div className="flex gap-4 mb-2">
-                                <label className="flex items-center text-sm"><input type="radio" name="billType" className="mr-2 text-teal-600 focus:ring-teal-500" defaultChecked /> MASTER</label>
-                                <label className="flex items-center text-sm"><input type="radio" name="billType" className="mr-2 text-teal-600 focus:ring-teal-500" /> HOUSE</label>
-                             </div>
+                        <input type="text" placeholder="Số D/O (Mã lệnh)" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none uppercase" />
+                        <input type="text" placeholder="Số BL/Booking" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none uppercase" />
+                    </div>
+                    
+                    <input type="text" placeholder="Số Container (Tùy chọn)" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none uppercase" />
+                    
+                    {/* Grid for Dates */}
+                    <div className="grid grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-[10px] text-gray-400 mb-1">Hạn lệnh</label>
+                            <input type="date" className="w-full p-2 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" />
                         </div>
-                        <input type="text" placeholder="Số D/O (Mã lệnh)" className="col-span-2 w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" />
-                        <input type="text" placeholder="Số BL/Booking" className="col-span-2 w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" />
-                        <input type="text" placeholder="Số Container" className="col-span-2 w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" />
-                        
-                        <div className="col-span-1">
-                            <span className="text-[10px] text-gray-400">Hạn lệnh</span>
-                            <div className="relative">
-                                <input type="date" className="w-full p-2 bg-gray-50 border border-gray-200 rounded text-xs focus:ring-1 focus:ring-teal-500 outline-none" />
-                            </div>
-                        </div>
-                         <div className="col-span-1">
-                            <span className="text-[10px] text-gray-400">Hạn lưu cont</span>
-                            <div className="relative">
-                                <input type="date" className="w-full p-2 bg-gray-50 border border-gray-200 rounded text-xs focus:ring-1 focus:ring-teal-500 outline-none" />
-                            </div>
+                         <div>
+                            <label className="block text-[10px] text-gray-400 mb-1">Hạn lưu cont</label>
+                            <input type="date" className="w-full p-2 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" />
                         </div>
                     </div>
                 </div>
 
                 <div className="h-px bg-gray-100"></div>
 
-                {/* STEP 2 */}
+                {/* STEP 2: OWNER INFO */}
                 <div className="space-y-3">
                      <label className="text-xs font-bold text-gray-500 uppercase flex items-center">
                         <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-2"></div>
@@ -152,25 +160,29 @@ const ImportContainerOrder: React.FC = () => {
 
                 <div className="h-px bg-gray-100"></div>
 
-                {/* STEP 3 */}
+                {/* STEP 3: TRANSPORT */}
                 <div className="space-y-3">
                      <label className="text-xs font-bold text-gray-500 uppercase flex items-center">
                         <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-2"></div>
                         Phương thức vận chuyển
                     </label>
-                    <div className="flex gap-4">
+                    <div className="flex gap-3">
                         <label className="flex-1 cursor-pointer">
                             <input type="radio" name="transport" className="peer sr-only" defaultChecked />
-                            <div className="p-3 border border-gray-200 rounded-lg text-center peer-checked:border-teal-500 peer-checked:bg-teal-50 transition-all hover:bg-gray-50">
-                                <Truck className="w-5 h-5 mx-auto mb-1 text-gray-600 peer-checked:text-teal-600" />
-                                <span className="text-xs font-bold text-gray-600 peer-checked:text-teal-700">Xe chủ hàng</span>
+                            <div className="p-2 border border-gray-200 rounded-lg text-center peer-checked:border-teal-500 peer-checked:bg-teal-50 transition-all hover:bg-gray-50">
+                                <div className="flex items-center justify-center gap-2">
+                                    <Truck className="w-4 h-4 text-gray-500 peer-checked:text-teal-600" />
+                                    <span className="text-xs font-bold text-gray-600 peer-checked:text-teal-700">Xe chủ hàng</span>
+                                </div>
                             </div>
                         </label>
                         <label className="flex-1 cursor-pointer">
                             <input type="radio" name="transport" className="peer sr-only" />
-                            <div className="p-3 border border-gray-200 rounded-lg text-center peer-checked:border-teal-500 peer-checked:bg-teal-50 transition-all hover:bg-gray-50">
-                                <Ship className="w-5 h-5 mx-auto mb-1 text-gray-600 peer-checked:text-teal-600" />
-                                <span className="text-xs font-bold text-gray-600 peer-checked:text-teal-700">Sà lan</span>
+                            <div className="p-2 border border-gray-200 rounded-lg text-center peer-checked:border-teal-500 peer-checked:bg-teal-50 transition-all hover:bg-gray-50">
+                                <div className="flex items-center justify-center gap-2">
+                                    <Ship className="w-4 h-4 text-gray-500 peer-checked:text-teal-600" />
+                                    <span className="text-xs font-bold text-gray-600 peer-checked:text-teal-700">Sà lan</span>
+                                </div>
                             </div>
                         </label>
                     </div>
@@ -179,7 +191,7 @@ const ImportContainerOrder: React.FC = () => {
                 {/* STEP 4: ACTION */}
                 <button 
                     onClick={handleLoadData}
-                    className="w-full bg-[#84cc16] hover:bg-[#65a30d] text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all flex items-center justify-center gap-2 mt-4"
+                    className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all flex items-center justify-center gap-2 mt-2"
                 >
                     <Database className="w-4 h-4" />
                     NẠP DỮ LIỆU
