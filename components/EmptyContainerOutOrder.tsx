@@ -85,7 +85,7 @@ const EmptyContainerOutOrder: React.FC = () => {
                             <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-2"></div>
                             Loại Booking
                         </label>
-                        <div className="flex gap-4 mb-2 bg-gray-50 p-2 rounded border border-gray-100">
+                        <div className="flex gap-4 mb-2 bg-white p-2 rounded border border-gray-300">
                              <label className="flex items-center cursor-pointer">
                                 <input 
                                     type="radio" 
@@ -111,7 +111,7 @@ const EmptyContainerOutOrder: React.FC = () => {
                             value={bookingNo}
                             onChange={(e) => setBookingNo(e.target.value)}
                             placeholder="Số Booking *"
-                            className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm uppercase focus:ring-1 focus:ring-teal-500 outline-none"
+                            className="w-full p-2.5 bg-white border border-gray-300 rounded text-sm uppercase text-gray-900 focus:ring-1 focus:ring-teal-500 outline-none placeholder-gray-400"
                         />
                         
                         <div className="grid grid-cols-2 gap-3">
@@ -120,7 +120,7 @@ const EmptyContainerOutOrder: React.FC = () => {
                                 <select 
                                     value={isoSize}
                                     onChange={(e) => setIsoSize(e.target.value)}
-                                    className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none"
+                                    className="w-full p-2.5 bg-white border border-gray-300 rounded text-sm text-gray-900 focus:ring-1 focus:ring-teal-500 outline-none"
                                 >
                                     <option value="20DC">20DC</option>
                                     <option value="40DC">40DC</option>
@@ -133,7 +133,7 @@ const EmptyContainerOutOrder: React.FC = () => {
                                 <div className="flex items-center">
                                     <button 
                                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                        className="w-8 h-[38px] bg-white border border-gray-300 rounded-l flex items-center justify-center hover:bg-gray-100"
+                                        className="w-8 h-[42px] bg-white border border-gray-300 rounded-l flex items-center justify-center hover:bg-gray-50 text-gray-600"
                                     >
                                         -
                                     </button>
@@ -141,11 +141,11 @@ const EmptyContainerOutOrder: React.FC = () => {
                                         type="number" 
                                         value={quantity}
                                         readOnly
-                                        className="w-full h-[38px] bg-gray-50 border-t border-b border-gray-300 text-center text-sm font-bold"
+                                        className="w-full h-[42px] bg-white border-t border-b border-gray-300 text-center text-sm font-bold text-gray-900"
                                     />
                                     <button 
                                             onClick={() => setQuantity(quantity + 1)}
-                                            className="w-8 h-[38px] bg-white border border-gray-300 rounded-r flex items-center justify-center hover:bg-gray-100"
+                                            className="w-8 h-[42px] bg-white border border-gray-300 rounded-r flex items-center justify-center hover:bg-gray-50 text-gray-600"
                                     >
                                         +
                                     </button>
@@ -159,7 +159,7 @@ const EmptyContainerOutOrder: React.FC = () => {
                                 type="date" 
                                 value={expiryDate}
                                 onChange={(e) => setExpiryDate(e.target.value)}
-                                className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
+                                className="w-full p-2.5 bg-white border border-gray-300 rounded text-sm text-gray-900 focus:ring-1 focus:ring-teal-500 outline-none" 
                             />
                         </div>
                     </div>
@@ -177,7 +177,7 @@ const EmptyContainerOutOrder: React.FC = () => {
                             placeholder="Tên chủ hàng *" 
                             value={ownerInfo.name}
                             onChange={(e) => setOwnerInfo({...ownerInfo, name: e.target.value})}
-                            className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
+                            className="w-full p-2.5 bg-white border border-gray-300 rounded text-sm text-gray-900 focus:ring-1 focus:ring-teal-500 outline-none placeholder-gray-400" 
                         />
                         <input 
                             type="text" 
@@ -187,7 +187,7 @@ const EmptyContainerOutOrder: React.FC = () => {
                                 setOwnerInfo({...ownerInfo, mst: e.target.value});
                                 setTaxId(e.target.value);
                             }}
-                            className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
+                            className="w-full p-2.5 bg-white border border-gray-300 rounded text-sm text-gray-900 focus:ring-1 focus:ring-teal-500 outline-none placeholder-gray-400" 
                         />
                         <div className="grid grid-cols-2 gap-3">
                             <input 
@@ -195,14 +195,14 @@ const EmptyContainerOutOrder: React.FC = () => {
                                 placeholder="Người đại diện" 
                                 value={ownerInfo.rep}
                                 onChange={(e) => setOwnerInfo({...ownerInfo, rep: e.target.value})}
-                                className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
+                                className="w-full p-2.5 bg-white border border-gray-300 rounded text-sm text-gray-900 focus:ring-1 focus:ring-teal-500 outline-none placeholder-gray-400" 
                             />
                             <input 
                                 type="text" 
                                 placeholder="Số điện thoại" 
                                 value={ownerInfo.phone}
                                 onChange={(e) => setOwnerInfo({...ownerInfo, phone: e.target.value})}
-                                className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
+                                className="w-full p-2.5 bg-white border border-gray-300 rounded text-sm text-gray-900 focus:ring-1 focus:ring-teal-500 outline-none placeholder-gray-400" 
                             />
                         </div>
                     </div>
@@ -342,7 +342,7 @@ const EmptyContainerOutOrder: React.FC = () => {
                                     value={taxId}
                                     onChange={(e) => setTaxId(e.target.value)}
                                     disabled={!isChangingTax}
-                                    className={`flex-grow p-2.5 border rounded text-sm outline-none font-mono ${isChangingTax ? 'bg-white border-blue-500 ring-1 ring-blue-200' : 'bg-gray-50 border-gray-200'}`}
+                                    className={`flex-grow p-2.5 border rounded text-sm outline-none font-mono text-gray-900 ${isChangingTax ? 'bg-white border-blue-500 ring-1 ring-blue-200' : 'bg-white border-gray-300'}`}
                                 />
                                 {isChangingTax ? (
                                     <button onClick={handleUpdateTaxInfo} className="px-4 bg-green-600 text-white rounded text-xs font-bold hover:bg-green-700">Check</button>
@@ -353,13 +353,13 @@ const EmptyContainerOutOrder: React.FC = () => {
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-gray-700 mb-1">Tên công ty / Đơn vị</label>
-                            <div className="p-3 bg-gray-50 border border-gray-200 rounded text-sm font-medium text-gray-700">
+                            <div className="p-3 bg-white border border-gray-300 rounded text-sm font-medium text-gray-900">
                                 {companyName}
                             </div>
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-gray-700 mb-1">Địa chỉ</label>
-                            <div className="p-3 bg-gray-50 border border-gray-200 rounded text-sm text-gray-600">
+                            <div className="p-3 bg-white border border-gray-300 rounded text-sm text-gray-900">
                                 123 Đường Số 1, KCN Cát Lái, TP. Thủ Đức, TP.HCM
                             </div>
                         </div>
