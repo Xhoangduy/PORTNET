@@ -40,9 +40,9 @@ const ImportContainerOrder: React.FC = () => {
   const handleLoadData = () => {
     // Simulate API call
     const mockData = [
-      { id: '1', containerNo: 'TCNU5802853', size: '20DC', seal: 'VN123456', weight: 18.5, vessel: 'MSC', status: 'Tại bãi', fee: 1500000, commodity: 'General', type: 'Nội địa', note: '' },
-      { id: '2', containerNo: 'MSKU9876543', size: '40HC', seal: 'VN654321', weight: 22.0, vessel: 'Maersk', status: 'Tại bãi', fee: 2800000, commodity: 'Reefer', type: 'Ngoại', note: '' },
-      { id: '3', containerNo: 'PONU1122334', size: '20DC', seal: 'VN112233', weight: 15.0, vessel: 'Evergreen', status: 'Tại bãi', fee: 1500000, commodity: 'General', type: 'Nội địa', note: '' },
+      { id: '1', containerNo: 'MSC123456', size: '20DC', seal: 'MSC123456', weight: 18.5, vessel: 'MSC', status: 'Tại bãi', fee: 1500000, commodity: 'General', type: 'Nội địa', note: '' },
+      { id: '2', containerNo: 'MAE654321', size: '40HC', seal: 'MAE654321', weight: 22.0, vessel: 'Maersk', status: 'Tại bãi', fee: 2800000, commodity: 'Reefer', type: 'Ngoại', note: '' },
+      { id: '3', containerNo: 'EGL112233', size: '20DC', seal: 'EGL112233', weight: 15.0, vessel: 'Evergreen', status: 'Tại bãi', fee: 1500000, commodity: 'General', type: 'Nội địa', note: '' },
     ];
     setContainers(mockData);
     setCurrentStep(2); // Move to next step automatically on success
@@ -77,55 +77,61 @@ const ImportContainerOrder: React.FC = () => {
   // --- RENDER HELPERS ---
 
   const steps = [
-      { id: 1, title: 'Thông tin lệnh', desc: 'Nhập thông tin lệnh giao' },
-      { id: 2, title: 'Danh sách container', desc: 'Chọn container cần lấy' },
-      { id: 3, title: 'Tính cước & Thanh toán', desc: 'Xác nhận & Quét mã QR' },
-      { id: 4, title: 'Hoàn tất', desc: 'Nhận E-Ticket' },
+      { id: 1, title: 'Thông tin lệnh' },
+      { id: 2, title: 'Danh sách container' },
+      { id: 3, title: 'Tính cước & Thanh toán' },
+      { id: 4, title: 'Hoàn tất' },
   ];
 
-  return (
-    <div className="flex flex-col lg:flex-row gap-6 animate-fade-in items-start font-inter">
-        
-        {/* LEFT SIDEBAR: VERTICAL STEPPER */}
-        <div className="w-full lg:w-64 flex-shrink-0">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sticky top-24">
-                <h2 className="text-base font-bold text-gray-800 mb-6 px-2 uppercase tracking-wide">
-                    Đăng ký giao hàng
-                </h2>
+  const renderProgressBar = () => (
+    <div className="mb-10 mt-4 w-full max-w-4xl mx-auto px-4">
+        <div className="flex items-center w-full">
+            {steps.map((step, index) => {
+                const isActive = currentStep === step.id;
+                const isCompleted = currentStep > step.id;
                 
-                <div className="relative pl-2">
-                    {/* Connecting Line */}
-                    <div className="absolute left-[19px] top-2 bottom-4 w-0.5 bg-gray-100"></div>
-
-                    {steps.map((step) => {
-                        const isActive = currentStep === step.id;
-                        const isCompleted = currentStep > step.id;
-                        
-                        return (
-                            <div key={step.id} 
-                                 className={`flex gap-3 mb-8 last:mb-0 relative cursor-pointer group`}
-                                 onClick={() => isCompleted && setCurrentStep(step.id as any)}
-                            >
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm border-2 z-10 transition-colors ${
-                                    isActive ? 'bg-blue-600 border-blue-600 text-white shadow-md' : 
-                                    isCompleted ? 'bg-green-500 border-green-500 text-white' : 
-                                    'bg-white border-gray-200 text-gray-400'
-                                }`}>
-                                    {isCompleted ? <Check className="w-4 h-4"/> : step.id}
-                                </div>
-                                <div className="pt-1">
-                                    <h3 className={`font-bold text-sm ${isActive ? 'text-blue-700' : 'text-gray-600'}`}>{step.title}</h3>
-                                    <p className="text-[10px] text-gray-400 mt-0.5 line-clamp-2">{step.desc}</p>
-                                </div>
+                return (
+                    <React.Fragment key={step.id}>
+                        {/* Step Node */}
+                        <div className="relative flex flex-col items-center group cursor-pointer" onClick={() => isCompleted && setCurrentStep(step.id as any)}>
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs border-2 transition-all z-10 ${
+                                isActive ? 'bg-blue-600 border-blue-600 text-white shadow-md scale-110' : 
+                                isCompleted ? 'bg-blue-600 border-blue-600 text-white' : 
+                                'bg-white border-gray-300 text-gray-400 group-hover:border-gray-400'
+                            }`}>
+                                {isCompleted ? <Check className="w-4 h-4"/> : step.id}
                             </div>
-                        )
-                    })}
-                </div>
-            </div>
-        </div>
+                            
+                            {/* Label */}
+                            <div className={`absolute top-10 w-32 text-center text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                                isActive ? 'text-blue-700' : 
+                                isCompleted ? 'text-blue-600' : 'text-gray-400'
+                            }`}>
+                                {step.title}
+                            </div>
+                        </div>
 
-        {/* RIGHT CONTENT AREA */}
-        <div className="flex-grow w-full">
+                        {/* Connecting Line */}
+                        {index < steps.length - 1 && (
+                            <div className={`flex-1 h-[2px] mx-2 transition-all duration-500 ${
+                                isCompleted ? 'bg-blue-600' : 'bg-gray-200'
+                            }`}></div>
+                        )}
+                    </React.Fragment>
+                );
+            })}
+        </div>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col gap-2 animate-fade-in font-inter">
+        
+        {/* TOP: HORIZONTAL STEPPER */}
+        {renderProgressBar()}
+
+        {/* CONTENT AREA */}
+        <div className="w-full">
             
             {/* STEP 1: INFORMATION FORM */}
             {currentStep === 1 && (
@@ -428,7 +434,7 @@ const ImportContainerOrder: React.FC = () => {
                                  <thead className="bg-gray-50 text-gray-700 text-xs uppercase font-bold">
                                      <tr>
                                          <th className="px-4 py-3 text-center w-10">
-                                             <input type="checkbox" checked readOnly className="rounded border-gray-300 text-blue-600" />
+                                             <input type="checkbox" checked readOnly className="rounded border-gray-300 text-blue-600 bg-white" />
                                          </th>
                                          <th className="px-4 py-3">Diễn giải</th>
                                          <th className="px-4 py-3 text-center">Kích cỡ ISO</th>
@@ -445,7 +451,7 @@ const ImportContainerOrder: React.FC = () => {
                                      {selectedContainers.map((cont) => (
                                         <tr key={cont.id} className="hover:bg-gray-50">
                                             <td className="px-4 py-3 text-center">
-                                                <input type="checkbox" checked readOnly className="rounded border-gray-300 text-blue-600" />
+                                                <input type="checkbox" checked readOnly className="rounded border-gray-300 text-blue-600 bg-white" />
                                             </td>
                                             <td className="px-4 py-3 text-gray-900">Cước hạ hàng cont tại bãi (Lift off cont at yard)</td>
                                             <td className="px-4 py-3 text-center text-gray-900">{cont.size}</td>
@@ -461,7 +467,7 @@ const ImportContainerOrder: React.FC = () => {
                                      {/* Mock Additional Service Line for visual completeness */}
                                      <tr className="hover:bg-gray-50">
                                          <td className="px-4 py-3 text-center">
-                                             <input type="checkbox" className="rounded border-gray-300 text-blue-600" />
+                                             <input type="checkbox" className="rounded border-gray-300 text-blue-600 bg-white" />
                                          </td>
                                          <td className="px-4 py-3 text-gray-900 underline decoration-dotted cursor-pointer hover:text-blue-600">Phí cắt seal tại bãi trung tâm (Cutting Seal at container yard)</td>
                                          <td className="px-4 py-3 text-center text-gray-900">22G0</td>
@@ -475,7 +481,7 @@ const ImportContainerOrder: React.FC = () => {
                                      </tr>
                                      <tr className="hover:bg-gray-50">
                                          <td className="px-4 py-3 text-center">
-                                             <input type="checkbox" className="rounded border-gray-300 text-blue-600" />
+                                             <input type="checkbox" className="rounded border-gray-300 text-blue-600 bg-white" />
                                          </td>
                                          <td className="px-4 py-3 text-gray-900 underline decoration-dotted cursor-pointer hover:text-blue-600">Phí hạ bãi hun trùng</td>
                                          <td className="px-4 py-3 text-center text-gray-900">22G0</td>
@@ -489,7 +495,7 @@ const ImportContainerOrder: React.FC = () => {
                                      </tr>
                                      <tr className="hover:bg-gray-50">
                                          <td className="px-4 py-3 text-center">
-                                             <input type="checkbox" className="rounded border-gray-300 text-blue-600" />
+                                             <input type="checkbox" className="rounded border-gray-300 text-blue-600 bg-white" />
                                          </td>
                                          <td className="px-4 py-3 text-gray-900 underline decoration-dotted cursor-pointer hover:text-blue-600">Cước lắp thiết bị container treo - 01 lớp (Installing hanging platform into container - 01 platform)</td>
                                          <td className="px-4 py-3 text-center text-gray-900">22G0</td>

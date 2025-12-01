@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { 
   Search, Package, Calendar, FileText, 
   CreditCard, CheckCircle, ArrowRight, Database, 
-  Smartphone, RefreshCw, Truck, Anchor, Upload, X, Filter
+  Smartphone, RefreshCw, Truck, Anchor, Upload, X, Filter, Check
 } from 'lucide-react';
 import { StuffingContainer } from '../types';
 
@@ -147,24 +147,45 @@ const StuffingOrder: React.FC = () => {
   };
 
   // Render Progress Bar
-  const renderProgressBar = () => (
-    <div className="bg-white p-4 mb-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between px-4 md:px-10">
-      <div className={`flex items-center gap-2 ${currentStep >= 1 ? 'text-teal-600' : 'text-gray-400'}`}>
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${currentStep >= 1 ? 'bg-teal-600 text-white' : 'bg-gray-200'}`}>1</div>
-        <span className="font-medium text-sm hidden sm:inline">Thông tin & Container</span>
-      </div>
-      <div className={`flex-1 h-1 mx-2 rounded ${currentStep >= 2 ? 'bg-teal-600' : 'bg-gray-200'}`}></div>
-      <div className={`flex items-center gap-2 ${currentStep >= 2 ? 'text-teal-600' : 'text-gray-400'}`}>
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${currentStep >= 2 ? 'bg-teal-600 text-white' : 'bg-gray-200'}`}>2</div>
-        <span className="font-medium text-sm hidden sm:inline">Tính cước</span>
-      </div>
-       <div className={`flex-1 h-1 mx-2 rounded ${currentStep >= 3 ? 'bg-teal-600' : 'bg-gray-200'}`}></div>
-      <div className={`flex items-center gap-2 ${currentStep >= 3 ? 'text-teal-600' : 'text-gray-400'}`}>
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${currentStep >= 3 ? 'bg-teal-600 text-white' : 'bg-gray-200'}`}>3</div>
-        <span className="font-medium text-sm hidden sm:inline">Thanh toán</span>
-      </div>
-    </div>
-  );
+  const renderProgressBar = () => {
+      const steps = [
+          { id: 1, title: 'Thông tin & Container' },
+          { id: 2, title: 'Tính cước' },
+          { id: 3, title: 'Thanh toán' },
+      ];
+
+      return (
+        <div className="mb-8 mt-2">
+            <div className="flex items-center justify-between px-4 md:px-24 relative">
+                 {/* Connecting Line */}
+                <div className="absolute left-10 right-10 top-4 h-[2px] bg-gray-200 -z-10"></div>
+                
+                {steps.map((step) => {
+                    const isActive = currentStep === step.id;
+                    const isCompleted = currentStep > step.id;
+                    
+                    return (
+                        <div key={step.id} className="flex flex-col items-center cursor-pointer group" onClick={() => isCompleted && setCurrentStep(step.id as any)}>
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 ${
+                                isActive ? 'bg-teal-600 text-white ring-4 ring-teal-50 shadow-md scale-110' : 
+                                isCompleted ? 'bg-teal-600 text-white' : 
+                                'bg-white border-2 border-gray-200 text-gray-400 group-hover:border-gray-300'
+                            }`}>
+                                {isCompleted ? <Check className="w-4 h-4"/> : step.id}
+                            </div>
+                            <span className={`mt-2 text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                                isActive ? 'text-teal-700' : 
+                                isCompleted ? 'text-teal-600' : 'text-gray-400'
+                            } hidden sm:block`}>
+                                {step.title}
+                            </span>
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
+      );
+  }
 
   // --- VIEW 1: INFO & LIST ---
   if (currentStep === 1) {
@@ -340,7 +361,7 @@ const StuffingOrder: React.FC = () => {
                         placeholder="Tên chủ hàng *" 
                         value={ownerInfo.name}
                         onChange={(e) => setOwnerInfo({...ownerInfo, name: e.target.value})}
-                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
+                        className="w-full p-2.5 bg-white border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
                     />
                     <div className="grid grid-cols-2 gap-3">
                         <input 
@@ -348,14 +369,14 @@ const StuffingOrder: React.FC = () => {
                             placeholder="Người đại diện" 
                             value={ownerInfo.rep}
                             onChange={(e) => setOwnerInfo({...ownerInfo, rep: e.target.value})}
-                            className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
+                            className="w-full p-2.5 bg-white border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
                         />
                         <input 
                             type="text" 
                             placeholder="Số điện thoại" 
                             value={ownerInfo.phone}
                             onChange={(e) => setOwnerInfo({...ownerInfo, phone: e.target.value})}
-                            className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
+                            className="w-full p-2.5 bg-white border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
                         />
                     </div>
                 </div>

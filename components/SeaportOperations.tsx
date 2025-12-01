@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { 
   Layers, ArrowDownCircle, ArrowUpCircle, Container, 
-  Wrench, FileCheck, CheckCircle, Clock, AlertCircle, Box, Anchor
+  Wrench, FileCheck, CheckCircle, Clock, AlertCircle, Box, Anchor, ArrowLeft
 } from 'lucide-react';
 import ImportContainerOrder from './ImportContainerOrder';
 import ExportContainerOrder from './ExportContainerOrder';
@@ -237,24 +237,40 @@ const SeaportOperations: React.FC = () => {
   return (
     <div className="animate-fade-in space-y-6">
       
-      {/* 1. Operations Menu Bar */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto scrollbar-hide">
-        <div className="flex min-w-max p-1">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.label)}
-              className={`px-5 py-3 text-xs font-bold uppercase tracking-wide transition-all rounded-lg mx-1 whitespace-nowrap ${
-                activeTab === item.label
-                  ? 'bg-teal-600 text-white shadow-md' 
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
+      {/* 1. Operations Menu Bar (Visible only when on Dashboard) */}
+      {activeTab === 'TÁC NGHIỆP' && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto scrollbar-hide">
+          <div className="flex min-w-max p-1">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.label)}
+                className={`px-5 py-3 text-xs font-bold uppercase tracking-wide transition-all rounded-lg mx-1 whitespace-nowrap ${
+                  activeTab === item.label
+                    ? 'bg-teal-600 text-white shadow-md' 
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Back Button (Visible when NOT on Dashboard) */}
+      {activeTab !== 'TÁC NGHIỆP' && (
+        <div className="flex items-center mb-4">
+           <button 
+             onClick={() => setActiveTab('TÁC NGHIỆP')}
+             className="text-gray-500 hover:text-blue-600 flex items-center text-sm font-bold transition-colors"
+           >
+             <ArrowLeft className="w-4 h-4 mr-1" /> Quay lại Dashboard Tác Nghiệp
+           </button>
+           <div className="mx-3 h-4 w-px bg-gray-300"></div>
+           <span className="text-gray-800 font-bold uppercase text-sm">{activeTab}</span>
+        </div>
+      )}
 
       {/* 2. Main Content based on Tab */}
       {activeTab === 'TÁC NGHIỆP' ? renderDashboard() : null}
