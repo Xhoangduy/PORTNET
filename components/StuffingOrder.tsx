@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Search, Package, Calendar, FileText, 
   CreditCard, CheckCircle, ArrowRight, Database, 
@@ -14,16 +14,19 @@ const StuffingOrder: React.FC = () => {
   
   // Vessel & Booking Type
   const [vessel, setVessel] = useState('');
+  const [etb, setEtb] = useState('');
+  const [etd, setEtd] = useState('');
   const [bookingType, setBookingType] = useState<'specified' | 'unspecified'>('specified');
   
   // Common Inputs
   const [bookingNo, setBookingNo] = useState('');
+  const [containerNoInput, setContainerNoInput] = useState(''); // New field
   const [commodity, setCommodity] = useState('BachHoa');
   const [stuffingPlan, setStuffingPlan] = useState('DongTaiBai');
   const [deliveryMethod, setDeliveryMethod] = useState('XeChuHang');
   const [expiryDate, setExpiryDate] = useState('');
   
-  // Specific: Unspecified Inputs
+  // Specific: Unspecified Inputs (or general ISO Size if used as filter)
   const [operator, setOperator] = useState('');
   const [isoSize, setIsoSize] = useState('20DC');
   const [condition, setCondition] = useState('A');
@@ -50,6 +53,18 @@ const StuffingOrder: React.FC = () => {
   const [companyName, setCompanyName] = useState('CÔNG TY TNHH LOGISTICS MẪU');
   const [isChangingTax, setIsChangingTax] = useState(false);
   const [showPaymentQR, setShowPaymentQR] = useState(false);
+
+  // --- EFFECT: MOCK VESSEL DATA ---
+  useEffect(() => {
+      if (vessel) {
+          // Simulate fetching ETB/ETD
+          setEtb('16/11/2023');
+          setEtd('17/11/2023');
+      } else {
+          setEtb('');
+          setEtd('');
+      }
+  }, [vessel]);
 
   // --- HELPERS ---
 
@@ -110,8 +125,8 @@ const StuffingOrder: React.FC = () => {
     const mockData: StuffingContainer[] = [
       { 
           id: '1', 
-          containerNo: 'SPEC998877', 
-          isoSize: '40HC', 
+          containerNo: containerNoInput || 'SPEC998877', 
+          isoSize: isoSize || '40HC', 
           condition: 'A', 
           commodity: getCommodityLabel(commodity), 
           stuffingPlan: getPlanLabel(stuffingPlan), 
@@ -208,34 +223,49 @@ const StuffingOrder: React.FC = () => {
                              <Package className="w-4 h-4 mr-2" /> 1. Thông tin lệnh đóng hàng
                          </h3>
                          
+                         {/* Radio Types for Logic */}
+                         <div className="flex gap-6 mb-6">
+                            <label className="flex items-center cursor-pointer">
+                                <input 
+                                    type="radio" 
+                                    checked={bookingType === 'specified'} 
+                                    onChange={() => setBookingType('specified')} 
+                                    className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300" 
+                                />
+                                <span className={`ml-2 text-sm font-medium ${bookingType === 'specified' ? 'text-blue-700' : 'text-gray-700'}`}>Booking Chỉ định</span>
+                            </label>
+                            <label className="flex items-center cursor-pointer">
+                                <input 
+                                    type="radio" 
+                                    checked={bookingType === 'unspecified'} 
+                                    onChange={() => setBookingType('unspecified')} 
+                                    className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300" 
+                                />
+                                <span className={`ml-2 text-sm font-medium ${bookingType === 'unspecified' ? 'text-blue-700' : 'text-gray-700'}`}>Không Chỉ định</span>
+                            </label>
+                         </div>
+
+                         {/* MAIN FORM GRID */}
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                              {/* Col 1 */}
                              <div className="space-y-4">
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Chọn Tàu / Chuyến <span className="text-red-500">*</span></label>
+                                    <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Tàu/Chuyến <span className="text-red-500">*</span></label>
                                     <select 
                                         value={vessel}
                                         onChange={(e) => setVessel(e.target.value)}
-                                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
                                     >
-                                        <option value="">-- Chọn tàu --</option>
+                                        <option value="">-- Chọn Tàu/Chuyến --</option>
                                         <option value="KOTA LIHAT">KOTA LIHAT / KLI01N</option>
                                         <option value="WAN HAI 305">WAN HAI 305 / W305N</option>
                                     </select>
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Loại Booking</label>
-                                    <div className="flex gap-4">
-                                        <label className={`flex-1 flex items-center cursor-pointer p-3 border rounded-lg transition-colors ${bookingType === 'specified' ? 'border-blue-500 bg-white' : 'border-gray-300 bg-white hover:bg-gray-50'}`}>
-                                            <input type="radio" checked={bookingType === 'specified'} onChange={() => setBookingType('specified')} className="text-blue-600 focus:ring-blue-500" />
-                                            <span className={`ml-2 text-sm font-medium ${bookingType === 'specified' ? 'text-blue-700' : 'text-gray-900'}`}>Booking Chỉ định</span>
-                                        </label>
-                                        <label className={`flex-1 flex items-center cursor-pointer p-3 border rounded-lg transition-colors ${bookingType === 'unspecified' ? 'border-blue-500 bg-white' : 'border-gray-300 bg-white hover:bg-gray-50'}`}>
-                                            <input type="radio" checked={bookingType === 'unspecified'} onChange={() => setBookingType('unspecified')} className="text-blue-600 focus:ring-blue-500" />
-                                            <span className={`ml-2 text-sm font-medium ${bookingType === 'unspecified' ? 'text-blue-700' : 'text-gray-900'}`}>Không Chỉ định</span>
-                                        </label>
+                                    <div className="flex gap-4 mt-2 text-xs text-gray-500 font-mono">
+                                        <span className="flex items-center">ETB: <span className="font-bold text-gray-800 ml-1 border-b border-gray-300 min-w-[80px] inline-block">{etb}</span></span>
+                                        <span className="flex items-center">ETD: <span className="font-bold text-gray-800 ml-1 border-b border-gray-300 min-w-[80px] inline-block">{etd}</span></span>
                                     </div>
                                 </div>
+                                
                                 <div>
                                     <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Số Booking <span className="text-red-500">*</span></label>
                                     <input 
@@ -247,120 +277,96 @@ const StuffingOrder: React.FC = () => {
                                     />
                                 </div>
 
-                                {/* Conditional Fields for Unspecified */}
-                                {bookingType === 'unspecified' && (
-                                    <div className="grid grid-cols-2 gap-4 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                                        <div className="col-span-2">
-                                            <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Hãng khai thác</label>
-                                            <input 
-                                                type="text" 
-                                                value={operator}
-                                                onChange={(e) => setOperator(e.target.value)}
-                                                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 uppercase"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Kích cỡ</label>
-                                            <select 
-                                                value={isoSize} 
-                                                onChange={(e) => setIsoSize(e.target.value)}
-                                                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500"
-                                            >
-                                                <option value="20DC">20DC</option>
-                                                <option value="40HC">40HC</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Loại vỏ</label>
-                                            <select 
-                                                value={condition} 
-                                                onChange={(e) => setCondition(e.target.value)}
-                                                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500"
-                                            >
-                                                <option value="A">Loại A</option>
-                                                <option value="B">Loại B</option>
-                                                <option value="C">Loại C</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                )}
+                                <div className="grid grid-cols-2 gap-4">
+                                     <div>
+                                        <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Số Container</label>
+                                        <input 
+                                            type="text" 
+                                            value={containerNoInput}
+                                            onChange={(e) => setContainerNoInput(e.target.value)}
+                                            placeholder="Số container"
+                                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 uppercase placeholder-gray-400"
+                                        />
+                                     </div>
+                                     <div>
+                                        <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Kích cỡ ISO <span className="text-red-500">*</span></label>
+                                        <select 
+                                            value={isoSize} 
+                                            onChange={(e) => setIsoSize(e.target.value)}
+                                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                        >
+                                            <option value="20DC">20DC</option>
+                                            <option value="40DC">40DC</option>
+                                            <option value="40HC">40HC</option>
+                                            <option value="45HC">45HC</option>
+                                        </select>
+                                     </div>
+                                </div>
                              </div>
 
                              {/* Col 2 */}
                              <div className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Loại hàng hóa</label>
-                                        <select 
-                                            value={commodity} 
-                                            onChange={(e) => setCommodity(e.target.value)}
-                                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500"
-                                        >
-                                            <option value="BachHoa">Hàng Bách Hóa</option>
-                                            <option value="DongLanh">Hàng Đông Lạnh</option>
-                                            <option value="NguyHiem">Hàng Nguy Hiểm</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Phương án đóng</label>
-                                        <select 
-                                            value={stuffingPlan} 
-                                            onChange={(e) => setStuffingPlan(e.target.value)}
-                                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500"
-                                        >
-                                            <option value="DongTaiBai">Đóng tại bãi</option>
-                                            <option value="DongTaiKho">Đóng tại kho</option>
-                                        </select>
-                                    </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Hàng hóa <span className="text-red-500">*</span></label>
+                                    <select 
+                                        value={commodity} 
+                                        onChange={(e) => setCommodity(e.target.value)}
+                                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                    >
+                                        <option value="BachHoa">Hàng Bách Hóa (General)</option>
+                                        <option value="DongLanh">Hàng Đông Lạnh (Reefer)</option>
+                                        <option value="NguyHiem">Hàng Nguy Hiểm (DG)</option>
+                                    </select>
                                 </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Phương án <span className="text-red-500">*</span></label>
+                                    <select 
+                                        value={stuffingPlan} 
+                                        onChange={(e) => setStuffingPlan(e.target.value)}
+                                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                    >
+                                        <option value="DongTaiBai">Đóng tại bãi</option>
+                                        <option value="DongTaiKho">Đóng tại kho</option>
+                                    </select>
+                                </div>
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Giao nhận</label>
+                                        <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">PTGN <span className="text-red-500">*</span></label>
                                         <select 
                                             value={deliveryMethod} 
                                             onChange={(e) => setDeliveryMethod(e.target.value)}
-                                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500"
+                                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                                         >
                                             <option value="XeChuHang">Xe chủ hàng</option>
                                             <option value="XeCang">Xe cảng</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Hạn lệnh</label>
+                                        <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Hạn lệnh <span className="text-red-500">*</span></label>
                                         <input 
                                             type="date" 
                                             value={expiryDate}
                                             onChange={(e) => setExpiryDate(e.target.value)}
-                                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500" 
+                                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
                                         />
                                     </div>
                                 </div>
-
-                                {bookingType === 'specified' && (
-                                    <div>
-                                         <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">File đính kèm</label>
-                                         <div className="border border-dashed border-gray-300 rounded-lg p-3 text-center bg-gray-50 hover:bg-white transition-colors cursor-pointer">
-                                             <input type="file" className="hidden" id="file-upload" onChange={(e) => setAttachedFile(e.target.files?.[0] || null)} />
-                                             <label htmlFor="file-upload" className="flex flex-col items-center justify-center cursor-pointer">
-                                                 <Upload className="w-5 h-5 text-gray-400 mb-1" />
-                                                 <span className="text-xs text-gray-500">{attachedFile ? attachedFile.name : 'Tải lên Booking (PDF/Image)'}</span>
-                                             </label>
-                                         </div>
-                                    </div>
-                                )}
                              </div>
                          </div>
                     </div>
 
                     {/* SECTION 2: OWNER */}
                     <div className="mb-6">
-                         <h3 className="text-blue-700 font-bold text-sm uppercase mb-4 pb-2 border-b border-gray-100 flex items-center">
-                             <User className="w-4 h-4 mr-2" /> 2. Thông tin chủ hàng
-                         </h3>
+                         <div className="flex items-center gap-4 mb-6">
+                             <div className="flex-grow h-px bg-yellow-400"></div>
+                             <h3 className="text-yellow-600 font-bold text-sm uppercase">Thông tin chủ hàng</h3>
+                             <div className="flex-grow h-px bg-yellow-400"></div>
+                         </div>
                          
                          <div className="space-y-4">
                              <div>
-                                <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Tên chủ hàng <span className="text-red-500">*</span></label>
+                                <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Chủ hàng <span className="text-red-500">*</span></label>
                                 <input 
                                     type="text" 
                                     value={ownerInfo.name}
@@ -372,7 +378,7 @@ const StuffingOrder: React.FC = () => {
 
                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                  <div>
-                                    <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Người đại diện</label>
+                                    <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Tên người đại diện <span className="text-red-500">*</span></label>
                                     <input 
                                         type="text" 
                                         value={ownerInfo.rep}
@@ -395,7 +401,7 @@ const StuffingOrder: React.FC = () => {
                              <div>
                                 <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Ghi chú</label>
                                 <textarea 
-                                    rows={2}
+                                    rows={1}
                                     value={ownerInfo.note}
                                     onChange={(e) => setOwnerInfo({...ownerInfo, note: e.target.value})}
                                     className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none"
@@ -416,7 +422,7 @@ const StuffingOrder: React.FC = () => {
                                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                             }`}
                         >
-                            Tiếp theo <ArrowRight className="w-4 h-4 ml-2" />
+                             Tiếp tục <ArrowRight className="w-4 h-4 ml-2" />
                         </button>
                     </div>
                 </div>

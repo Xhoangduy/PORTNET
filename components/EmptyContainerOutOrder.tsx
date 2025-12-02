@@ -13,6 +13,7 @@ const EmptyContainerOutOrder: React.FC = () => {
   // Step 1: Info
   const [bookingType, setBookingType] = useState<'specified' | 'unspecified'>('unspecified');
   const [bookingNo, setBookingNo] = useState('');
+  const [operator, setOperator] = useState('MAERSK'); // New state for Operator
   const [expiryDate, setExpiryDate] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [isoSize, setIsoSize] = useState('20DC');
@@ -20,8 +21,8 @@ const EmptyContainerOutOrder: React.FC = () => {
   const [ownerInfo, setOwnerInfo] = useState({
     name: '',
     rep: '',
-    mst: '',
-    phone: ''
+    phone: '',
+    note: '' // Changed mst to note
   });
 
   // Step 2 & 3: Billing & Payment
@@ -135,15 +136,31 @@ const EmptyContainerOutOrder: React.FC = () => {
                                     </div>
                                 </div>
                                 
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Số Booking <span className="text-red-500">*</span></label>
-                                    <input 
-                                        type="text" 
-                                        value={bookingNo}
-                                        onChange={(e) => setBookingNo(e.target.value)}
-                                        placeholder="Nhập số Booking"
-                                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 uppercase placeholder-gray-400"
-                                    />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Số Booking <span className="text-red-500">*</span></label>
+                                        <input 
+                                            type="text" 
+                                            value={bookingNo}
+                                            onChange={(e) => setBookingNo(e.target.value)}
+                                            placeholder="Nhập số Booking"
+                                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 uppercase placeholder-gray-400"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Hãng khai thác <span className="text-red-500">*</span></label>
+                                        <select 
+                                            value={operator}
+                                            onChange={(e) => setOperator(e.target.value)}
+                                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                        >
+                                            <option value="MAERSK">MAERSK</option>
+                                            <option value="MSC">MSC</option>
+                                            <option value="CMA">CMA</option>
+                                            <option value="ONE">ONE</option>
+                                            <option value="COSCO">COSCO</option>
+                                        </select>
+                                    </div>
                                 </div>
                              </div>
 
@@ -225,20 +242,7 @@ const EmptyContainerOutOrder: React.FC = () => {
                                 />
                              </div>
 
-                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                 <div>
-                                    <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Mã số thuế <span className="text-red-500">*</span></label>
-                                    <input 
-                                        type="text" 
-                                        value={ownerInfo.mst}
-                                        onChange={(e) => {
-                                            setOwnerInfo({...ownerInfo, mst: e.target.value});
-                                            setTaxId(e.target.value);
-                                        }}
-                                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="Nhập MST"
-                                    />
-                                 </div>
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                  <div>
                                     <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Người đại diện</label>
                                     <input 
@@ -259,6 +263,17 @@ const EmptyContainerOutOrder: React.FC = () => {
                                         placeholder="SĐT liên hệ"
                                     />
                                  </div>
+                             </div>
+
+                             <div>
+                                <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Ghi chú</label>
+                                <textarea 
+                                    rows={2}
+                                    value={ownerInfo.note}
+                                    onChange={(e) => setOwnerInfo({...ownerInfo, note: e.target.value})}
+                                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                                    placeholder="Nhập ghi chú thêm..."
+                                ></textarea>
                              </div>
                          </div>
                     </div>
@@ -329,7 +344,7 @@ const EmptyContainerOutOrder: React.FC = () => {
                                         </td>
                                         <td className="px-6 py-4 font-bold text-blue-900 font-mono">{bookingNo}</td>
                                         <td className="px-6 py-4 text-gray-900">{isoSize}</td>
-                                        <td className="px-6 py-4 text-gray-900 font-medium">MAERSK</td>
+                                        <td className="px-6 py-4 text-gray-900 font-medium">{operator}</td>
                                         <td className="px-6 py-4 text-gray-900">Cont Rỗng</td>
                                         <td className="px-6 py-4 text-gray-900">
                                             <span className="px-2 py-1 rounded text-xs font-bold bg-orange-100 text-orange-700">

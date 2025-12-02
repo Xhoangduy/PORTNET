@@ -20,6 +20,7 @@ const ImportContainerOrder: React.FC = () => {
   const [doNumber, setDoNumber] = useState('');
   const [blNumber, setBlNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
+  const [storageExpiryDate, setStorageExpiryDate] = useState(''); // New state for Storage Expiry
   const [transportType, setTransportType] = useState<'truck' | 'barge'>('truck');
   
   const [ownerInfo, setOwnerInfo] = useState({
@@ -188,13 +189,22 @@ const ImportContainerOrder: React.FC = () => {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-3 gap-4">
                                     <div>
                                         <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Hạn lệnh</label>
                                         <input 
                                             type="date" 
                                             value={expiryDate}
                                             onChange={(e) => setExpiryDate(e.target.value)}
+                                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Hạn lưu cont</label>
+                                        <input 
+                                            type="date" 
+                                            value={storageExpiryDate}
+                                            onChange={(e) => setStorageExpiryDate(e.target.value)}
                                             className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                                         />
                                     </div>
