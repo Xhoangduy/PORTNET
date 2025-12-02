@@ -3,15 +3,15 @@ import React, { useState } from 'react';
 import { 
   Plus, Trash2, Truck, Ship, User, FileText, 
   CreditCard, CheckCircle, ArrowRight, Calendar, 
-  Smartphone, Save, RefreshCw, X, Check
+  Smartphone, Save, RefreshCw, X, Check, Box, QrCode, Copy, Layers, ChevronRight
 } from 'lucide-react';
 import { EmptyReturnContainer } from '../types';
 
 const EmptyContainerInOrder: React.FC = () => {
   // --- STATE ---
-  const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1); // 1: Info/List, 2: Billing, 3: Payment, 4: Success
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1);
   
-  // Step 1: Info & List
+  // Step 1: Info
   const [returnDate, setReturnDate] = useState('');
   const [ownerInfo, setOwnerInfo] = useState({
     name: '',
@@ -21,6 +21,7 @@ const EmptyContainerInOrder: React.FC = () => {
   });
   const [transportMethod, setTransportMethod] = useState<'truck' | 'barge'>('truck');
   
+  // Step 2: List
   const [containers, setContainers] = useState<EmptyReturnContainer[]>([]);
   
   // Modal/Form for Add Container
@@ -29,17 +30,16 @@ const EmptyContainerInOrder: React.FC = () => {
     operator: '', containerNo: '', isoSize: '20DC'
   });
 
-  // Step 2: Billing
+  // Step 3: Billing & Payment
   const [taxId, setTaxId] = useState('0312345678');
   const [companyName, setCompanyName] = useState('CÔNG TY TNHH LOGISTICS MẪU');
   const [isChangingTax, setIsChangingTax] = useState(false);
-
-  // Step 3: Payment
-  const [showOtpInput, setShowOtpInput] = useState(false);
-  const [otpCode, setOtpCode] = useState(['', '', '', '', '', '']);
+  const [showPaymentQR, setShowPaymentQR] = useState(false);
 
   // Helpers
-  const totalAmount = containers.reduce((sum, c) => sum + c.fee, 0);
+  const subTotal = containers.reduce((sum, c) => sum + c.fee, 0);
+  const vatAmount = subTotal * 0.08;
+  const totalAmount = subTotal + vatAmount;
 
   const handleAddContainer = () => {
     if (!newContainer.containerNo || !newContainer.operator) return;
@@ -72,248 +72,460 @@ const EmptyContainerInOrder: React.FC = () => {
     setIsChangingTax(false);
   };
 
-  const handlePayment = () => {
-    setShowOtpInput(true);
-  };
-
-  const verifyOtp = () => {
-    setTimeout(() => {
-        setCurrentStep(4);
-    }, 1000);
+  const handleConfirmBilling = () => {
+      setShowPaymentQR(true);
   };
 
   // Render Progress Bar
-  const renderProgressBar = () => {
-      const steps = [
-          { id: 1, title: 'Thông tin & Container' },
-          { id: 2, title: 'Tính cước' },
-          { id: 3, title: 'Thanh toán' },
-      ];
+  const steps = [
+      { id: 1, title: 'Thông tin lệnh' },
+      { id: 2, title: 'Danh sách container' },
+      { id: 3, title: 'Tính cước & Thanh toán' },
+      { id: 4, title: 'Hoàn tất' },
+  ];
 
-      return (
-        <div className="mb-8 mt-2">
-            <div className="flex items-center justify-between px-4 md:px-24 relative">
-                 {/* Connecting Line */}
-                <div className="absolute left-10 right-10 top-4 h-[2px] bg-gray-200 -z-10"></div>
+  const renderProgressBar = () => (
+    <div className="mb-10 mt-4 w-full max-w-4xl mx-auto px-4">
+        <div className="flex items-center w-full">
+            {steps.map((step, index) => {
+                const isActive = currentStep === step.id;
+                const isCompleted = currentStep > step.id;
                 
-                {steps.map((step) => {
-                    const isActive = currentStep === step.id;
-                    const isCompleted = currentStep > step.id;
-                    
-                    return (
-                        <div key={step.id} className="flex flex-col items-center cursor-pointer group" onClick={() => isCompleted && setCurrentStep(step.id as any)}>
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 ${
-                                isActive ? 'bg-teal-600 text-white ring-4 ring-teal-50 shadow-md scale-110' : 
-                                isCompleted ? 'bg-teal-600 text-white' : 
-                                'bg-white border-2 border-gray-200 text-gray-400 group-hover:border-gray-300'
+                return (
+                    <React.Fragment key={step.id}>
+                        {/* Step Node */}
+                        <div className="relative flex flex-col items-center group cursor-pointer" onClick={() => isCompleted && setCurrentStep(step.id as any)}>
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs border-2 transition-all z-10 ${
+                                isActive ? 'bg-blue-600 border-blue-600 text-white shadow-md scale-110' : 
+                                isCompleted ? 'bg-blue-600 border-blue-600 text-white' : 
+                                'bg-white border-gray-300 text-gray-400 group-hover:border-gray-400'
                             }`}>
                                 {isCompleted ? <Check className="w-4 h-4"/> : step.id}
                             </div>
-                            <span className={`mt-2 text-[10px] font-bold uppercase tracking-wider transition-colors ${
-                                isActive ? 'text-teal-700' : 
-                                isCompleted ? 'text-teal-600' : 'text-gray-400'
-                            } hidden sm:block`}>
+                            
+                            {/* Label */}
+                            <div className={`absolute top-10 w-32 text-center text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                                isActive ? 'text-blue-700' : 
+                                isCompleted ? 'text-blue-600' : 'text-gray-400'
+                            }`}>
                                 {step.title}
-                            </span>
+                            </div>
                         </div>
-                    )
-                })}
-            </div>
-        </div>
-      );
-  }
 
-  // --- VIEW 1: INFO & LIST ---
-  if (currentStep === 1) {
-    return (
-      <div className="animate-fade-in relative">
+                        {/* Connecting Line */}
+                        {index < steps.length - 1 && (
+                            <div className={`flex-1 h-[2px] mx-2 transition-all duration-500 ${
+                                isCompleted ? 'bg-blue-600' : 'bg-gray-200'
+                            }`}></div>
+                        )}
+                    </React.Fragment>
+                );
+            })}
+        </div>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col gap-2 animate-fade-in font-inter">
         {renderProgressBar()}
 
-        <div className="flex flex-col xl:flex-row gap-6 items-start h-full">
-          
-          {/* LEFT: ORDER INFO */}
-          <div className="w-full xl:w-[400px] bg-white rounded-xl shadow-sm border border-teal-100 overflow-hidden flex-shrink-0">
-             <div className="bg-teal-600 p-4 text-white flex justify-between items-center">
-                 <h3 className="font-bold text-sm uppercase">Thông tin lệnh hạ rỗng</h3>
-                 <Calendar className="w-4 h-4 text-white/80" />
-             </div>
-             
-             <div className="p-5 space-y-6">
-                
-                {/* DATE */}
-                <div className="space-y-3">
-                   <label className="text-xs font-bold text-gray-500 uppercase flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-2"></div>
-                        Hạn trả rỗng
-                   </label>
-                   <div className="relative">
-                      <input 
-                        type="date" 
-                        value={returnDate}
-                        onChange={(e) => setReturnDate(e.target.value)}
-                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
-                      />
-                   </div>
-                </div>
+        <div className="w-full">
+            
+            {/* STEP 1: INFO FORM */}
+            {currentStep === 1 && (
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 md:p-8">
+                     {/* SECTION 1 */}
+                     <div className="mb-8">
+                         <h3 className="text-blue-700 font-bold text-sm uppercase mb-4 pb-2 border-b border-gray-100 flex items-center">
+                             <Layers className="w-4 h-4 mr-2" /> 1. Thông tin lệnh hạ rỗng
+                         </h3>
+                         
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Hạn trả rỗng <span className="text-red-500">*</span></label>
+                                    <input 
+                                        type="date" 
+                                        value={returnDate}
+                                        onChange={(e) => setReturnDate(e.target.value)}
+                                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                </div>
+                             </div>
 
-                <div className="h-px bg-gray-100"></div>
+                             <div className="space-y-4">
+                                 <div>
+                                     <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Phương thức vận chuyển</label>
+                                     <div className="flex gap-4">
+                                        <label className={`flex-1 flex items-center cursor-pointer p-3 border rounded-lg transition-colors ${transportMethod === 'truck' ? 'border-blue-500 bg-white' : 'border-gray-300 bg-white hover:bg-gray-50'}`}>
+                                            <input type="radio" checked={transportMethod === 'truck'} onChange={() => setTransportMethod('truck')} className="text-blue-600 focus:ring-blue-500" />
+                                            <span className={`ml-2 text-sm font-medium ${transportMethod === 'truck' ? 'text-blue-700' : 'text-gray-900'}`}>Xe chủ hàng</span>
+                                        </label>
+                                        <label className={`flex-1 flex items-center cursor-pointer p-3 border rounded-lg transition-colors ${transportMethod === 'barge' ? 'border-blue-500 bg-white' : 'border-gray-300 bg-white hover:bg-gray-50'}`}>
+                                            <input type="radio" checked={transportMethod === 'barge'} onChange={() => setTransportMethod('barge')} className="text-blue-600 focus:ring-blue-500" />
+                                            <span className={`ml-2 text-sm font-medium ${transportMethod === 'barge' ? 'text-blue-700' : 'text-gray-900'}`}>Sà lan</span>
+                                        </label>
+                                    </div>
+                                 </div>
+                             </div>
+                         </div>
+                    </div>
 
-                {/* OWNER INFO */}
-                <div className="space-y-3">
-                    <label className="text-xs font-bold text-gray-500 uppercase flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-2"></div>
-                        Thông tin chủ hàng
-                   </label>
-                   <input 
-                        type="text" 
-                        placeholder="Tên chủ hàng *" 
-                        value={ownerInfo.name}
-                        onChange={(e) => setOwnerInfo({...ownerInfo, name: e.target.value})}
-                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
-                   />
-                   <div className="grid grid-cols-2 gap-3">
-                        <input 
-                            type="text" 
-                            placeholder="Người đại diện" 
-                            value={ownerInfo.rep}
-                            onChange={(e) => setOwnerInfo({...ownerInfo, rep: e.target.value})}
-                            className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
-                        />
-                        <input 
-                            type="text" 
-                            placeholder="Số điện thoại" 
-                            value={ownerInfo.phone}
-                            onChange={(e) => setOwnerInfo({...ownerInfo, phone: e.target.value})}
-                            className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none" 
-                        />
-                   </div>
-                   <textarea 
-                        placeholder="Ghi chú (nếu có)" 
-                        rows={2} 
-                        value={ownerInfo.note}
-                        onChange={(e) => setOwnerInfo({...ownerInfo, note: e.target.value})}
-                        className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-teal-500 outline-none"
-                   ></textarea>
-                </div>
+                    {/* SECTION 2 */}
+                    <div className="mb-6">
+                         <h3 className="text-blue-700 font-bold text-sm uppercase mb-4 pb-2 border-b border-gray-100 flex items-center">
+                             <User className="w-4 h-4 mr-2" /> 2. Thông tin chủ hàng
+                         </h3>
+                         
+                         <div className="space-y-4">
+                             <div>
+                                <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Tên chủ hàng <span className="text-red-500">*</span></label>
+                                <input 
+                                    type="text" 
+                                    value={ownerInfo.name}
+                                    onChange={(e) => setOwnerInfo({...ownerInfo, name: e.target.value})}
+                                    placeholder="Nhập tên chủ hàng..."
+                                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
+                                />
+                             </div>
 
-                <div className="h-px bg-gray-100"></div>
-
-                {/* TRANSPORT METHOD */}
-                <div className="space-y-3">
-                   <label className="text-xs font-bold text-gray-500 uppercase flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-2"></div>
-                        Phương tiện vận chuyển
-                   </label>
-                   <div className="flex gap-4">
-                        <label className="flex-1 cursor-pointer">
-                            <input 
-                                type="radio" 
-                                name="transport_return" 
-                                className="peer sr-only" 
-                                checked={transportMethod === 'truck'}
-                                onChange={() => setTransportMethod('truck')}
-                            />
-                            <div className="p-3 border border-gray-200 rounded-lg text-center peer-checked:border-teal-500 peer-checked:bg-teal-50 transition-all hover:bg-gray-50">
-                                <Truck className="w-5 h-5 mx-auto mb-1 text-gray-600 peer-checked:text-teal-600" />
-                                <span className="text-xs font-bold text-gray-600 peer-checked:text-teal-700">Xe chủ hàng</span>
-                            </div>
-                        </label>
-                        <label className="flex-1 cursor-pointer">
-                            <input 
-                                type="radio" 
-                                name="transport_return" 
-                                className="peer sr-only" 
-                                checked={transportMethod === 'barge'}
-                                onChange={() => setTransportMethod('barge')}
-                            />
-                            <div className="p-3 border border-gray-200 rounded-lg text-center peer-checked:border-teal-500 peer-checked:bg-teal-50 transition-all hover:bg-gray-50">
-                                <Ship className="w-5 h-5 mx-auto mb-1 text-gray-600 peer-checked:text-teal-600" />
-                                <span className="text-xs font-bold text-gray-600 peer-checked:text-teal-700">Sà lan</span>
-                            </div>
-                        </label>
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                 <div>
+                                    <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Người đại diện</label>
+                                    <input 
+                                        type="text" 
+                                        value={ownerInfo.rep}
+                                        onChange={(e) => setOwnerInfo({...ownerInfo, rep: e.target.value})}
+                                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="Tên người làm thủ tục"
+                                    />
+                                 </div>
+                                 <div>
+                                    <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Số điện thoại <span className="text-red-500">*</span></label>
+                                    <input 
+                                        type="text" 
+                                        value={ownerInfo.phone}
+                                        onChange={(e) => setOwnerInfo({...ownerInfo, phone: e.target.value})}
+                                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="SĐT liên hệ"
+                                    />
+                                 </div>
+                             </div>
+                             <div>
+                                <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Ghi chú</label>
+                                <textarea 
+                                    rows={2}
+                                    value={ownerInfo.note}
+                                    onChange={(e) => setOwnerInfo({...ownerInfo, note: e.target.value})}
+                                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                                    placeholder="Ghi chú thêm..."
+                                ></textarea>
+                             </div>
+                         </div>
+                    </div>
+                    
+                    {/* FOOTER */}
+                    <div className="flex justify-end pt-4 border-t border-gray-100">
+                         <button 
+                            onClick={() => setCurrentStep(2)}
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-md hover:shadow-lg transition-all flex items-center text-sm"
+                        >
+                            Tiếp theo <ArrowRight className="w-4 h-4 ml-2" />
+                        </button>
                     </div>
                 </div>
+            )}
 
-             </div>
-          </div>
-
-          {/* RIGHT: CONTAINER LIST */}
-          <div className="flex-grow w-full bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col min-h-[600px]">
-             
-             {/* Header */}
-             <div className="p-4 border-b border-gray-100 bg-gray-50/30 flex justify-between items-center">
-                 <div className="flex items-center gap-2">
-                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-100 text-teal-600 text-xs font-bold">4</span>
-                    <h3 className="font-bold text-gray-700 text-sm uppercase">Danh sách Container Trả</h3>
-                 </div>
-                 
-                 <button 
-                    onClick={() => setIsModalOpen(true)}
-                    className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center transition-colors shadow-sm"
-                 >
-                    <Plus className="w-3.5 h-3.5 mr-1.5" /> Thêm Container
-                 </button>
-             </div>
-
-             {/* Content */}
-             <div className="flex-grow p-0 overflow-auto bg-gray-50/50">
-                {containers.length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-gray-400 p-10 border-2 border-dashed border-gray-200 m-4 rounded-xl">
-                        <RefreshCw className="w-12 h-12 text-gray-300 mb-3" />
-                        <p className="text-sm font-medium text-gray-500">Chưa có container nào.</p>
-                        <p className="text-xs text-gray-400 mt-1">Vui lòng bấm "Thêm Container" để nhập dữ liệu</p>
+            {/* STEP 2: CONTAINER LIST */}
+            {currentStep === 2 && (
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden min-h-[500px] flex flex-col">
+                    <div className="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
+                        <div>
+                             <h3 className="font-bold text-gray-800 text-lg">Danh sách Container Trả</h3>
+                             <p className="text-xs text-gray-500 mt-1">Nhập danh sách container cần trả rỗng</p>
+                        </div>
+                        <button 
+                            onClick={() => setIsModalOpen(true)}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center transition-colors shadow-sm"
+                        >
+                            <Plus className="w-3.5 h-3.5 mr-1.5" /> Thêm Container
+                        </button>
                     </div>
-                ) : (
-                    <table className="w-full text-sm text-left bg-white">
-                        <thead className="text-xs text-gray-500 uppercase bg-gray-100 border-b border-gray-200 sticky top-0 z-10">
-                            <tr>
-                                <th className="px-4 py-3">Hãng KT</th>
-                                <th className="px-4 py-3">Số Container</th>
-                                <th className="px-4 py-3">Kích cỡ</th>
-                                <th className="px-4 py-3 text-right">Phí (VND)</th>
-                                <th className="px-4 py-3 text-center">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {containers.map((cont) => (
-                                <tr key={cont.id} className="border-b hover:bg-teal-50 transition-colors">
-                                    <td className="px-4 py-3 font-medium">{cont.operator}</td>
-                                    <td className="px-4 py-3 font-bold text-blue-900 font-mono">{cont.containerNo}</td>
-                                    <td className="px-4 py-3">{cont.isoSize}</td>
-                                    <td className="px-4 py-3 text-right font-medium">{cont.fee.toLocaleString()}</td>
-                                    <td className="px-4 py-3 text-center">
+                    
+                    <div className="flex-grow overflow-auto p-0">
+                        {containers.length === 0 ? (
+                            <div className="h-full flex flex-col items-center justify-center text-gray-400 p-10">
+                                <RefreshCw className="w-12 h-12 text-gray-300 mb-3" />
+                                <p className="text-sm font-medium text-gray-500">Chưa có container nào.</p>
+                                <p className="text-xs text-gray-400 mt-1">Vui lòng bấm "Thêm Container" để nhập dữ liệu</p>
+                            </div>
+                        ) : (
+                            <table className="w-full text-sm text-left bg-white">
+                                <thead className="text-xs text-gray-500 uppercase bg-gray-100 border-b border-gray-200 sticky top-0 z-10">
+                                    <tr>
+                                        <th className="px-6 py-4">Hãng KT</th>
+                                        <th className="px-6 py-4">Số Container</th>
+                                        <th className="px-6 py-4">Kích cỡ</th>
+                                        <th className="px-6 py-4 text-right">Phí (VND)</th>
+                                        <th className="px-6 py-4 text-center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                    {containers.map((cont) => (
+                                        <tr key={cont.id} className="hover:bg-blue-50/50 transition-colors">
+                                            <td className="px-6 py-4 font-medium text-gray-900">{cont.operator}</td>
+                                            <td className="px-6 py-4 font-bold text-blue-900 font-mono">{cont.containerNo}</td>
+                                            <td className="px-6 py-4 text-gray-900">{cont.isoSize}</td>
+                                            <td className="px-6 py-4 text-right font-medium text-gray-900">{cont.fee.toLocaleString()}</td>
+                                            <td className="px-6 py-4 text-center">
+                                                <button 
+                                                    onClick={() => handleRemoveContainer(cont.id)}
+                                                    className="text-red-400 hover:text-red-600 p-1 transition-colors"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
+
+                    <div className="p-4 border-t border-gray-200 bg-gray-50 flex justify-between items-center">
+                        <button onClick={() => setCurrentStep(1)} className="px-5 py-2.5 text-gray-600 font-bold text-sm hover:text-gray-800 transition-colors">
+                            Quay lại
+                        </button>
+                        <button 
+                            disabled={containers.length === 0}
+                            onClick={() => setCurrentStep(3)}
+                            className={`px-8 py-2.5 rounded-lg font-bold text-sm text-white shadow-md flex items-center transition-all ${
+                                containers.length > 0 
+                                ? 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg' 
+                                : 'bg-gray-300 cursor-not-allowed'
+                            }`}
+                        >
+                            Tiếp tục <ChevronRight className="w-4 h-4 ml-1" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* STEP 3: BILLING & PAYMENT */}
+            {currentStep === 3 && (
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                    <h3 className="font-bold text-gray-800 text-lg mb-8 flex items-center border-b border-gray-100 pb-4">
+                        <CreditCard className="w-5 h-5 mr-2 text-blue-600" />
+                        Tính cước & Thanh toán
+                    </h3>
+
+                    {/* Top Section: Billing Info */}
+                    <div className="mb-8">
+                         <h4 className="font-bold text-sm text-gray-700 uppercase mb-4">Thông tin xuất hóa đơn</h4>
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div className="col-span-1">
+                                <label className="block text-xs font-bold text-gray-500 mb-1">Mã số thuế</label>
+                                <div className="flex gap-2">
+                                    <input 
+                                        type="text" 
+                                        value={taxId}
+                                        onChange={(e) => setTaxId(e.target.value)}
+                                        className="flex-grow p-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 outline-none"
+                                    />
+                                     <button 
+                                        onClick={handleUpdateTaxInfo}
+                                        className="px-3 bg-gray-100 text-gray-600 rounded-lg border border-gray-200 hover:bg-gray-200 font-medium text-xs"
+                                     >
+                                        Check
+                                    </button>
+                                </div>
+                             </div>
+                             <div className="col-span-1">
+                                <label className="block text-xs font-bold text-gray-500 mb-1">Thông tin khách hàng</label>
+                                <div className="p-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 font-medium min-h-[42px] flex items-center">
+                                    {companyName}
+                                </div>
+                             </div>
+                             <div className="col-span-2">
+                                <label className="block text-xs font-bold text-gray-500 mb-1">Địa chỉ</label>
+                                <div className="p-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900">
+                                    123 Đường Số 1, KCN Cát Lái, TP. Thủ Đức, TP.HCM
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+
+                    {/* Middle Section: Detailed Fee Table */}
+                    <div className="mb-8">
+                         <div className="flex justify-between items-end mb-4">
+                             <h4 className="font-bold text-sm text-gray-700 uppercase">Chi tiết cước phí</h4>
+                             <div className="flex gap-4 text-sm">
+                                 <span className="text-gray-500">Thành tiền: <b className="text-gray-900">{subTotal.toLocaleString()}</b></span>
+                                 <span className="text-gray-500">Tiền thuế: <b className="text-gray-900">{vatAmount.toLocaleString()}</b></span>
+                                 <span className="text-gray-500">Tổng tiền: <b className="text-blue-700 text-lg">{totalAmount.toLocaleString()}</b></span>
+                             </div>
+                         </div>
+                         
+                         <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                             <table className="w-full text-sm text-left">
+                                 <thead className="bg-gray-50 text-gray-700 text-xs uppercase font-bold">
+                                     <tr>
+                                         <th className="px-4 py-3 text-center w-10">
+                                             <input type="checkbox" checked readOnly className="rounded border-gray-300 text-blue-600 bg-white" />
+                                         </th>
+                                         <th className="px-4 py-3">Diễn giải</th>
+                                         <th className="px-4 py-3 text-center">Kích cỡ ISO</th>
+                                         <th className="px-4 py-3 text-center">Số lượng</th>
+                                         <th className="px-4 py-3 text-right">Đơn giá</th>
+                                         <th className="px-4 py-3 text-right">Thành tiền</th>
+                                         <th className="px-4 py-3 text-center">VAT(%)</th>
+                                         <th className="px-4 py-3 text-right">Tiền thuế</th>
+                                         <th className="px-4 py-3 text-right">Tổng tiền</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody className="divide-y divide-gray-100 bg-white">
+                                     {containers.map((cont) => (
+                                        <tr key={cont.id} className="hover:bg-gray-50">
+                                            <td className="px-4 py-3 text-center">
+                                                <input type="checkbox" checked readOnly className="rounded border-gray-300 text-blue-600 bg-white" />
+                                            </td>
+                                            <td className="px-4 py-3 text-gray-900">Cước hạ rỗng tại bãi (Lift off empty at yard)</td>
+                                            <td className="px-4 py-3 text-center text-gray-900">{cont.isoSize}</td>
+                                            <td className="px-4 py-3 text-center text-gray-900">1</td>
+                                            <td className="px-4 py-3 text-right text-gray-900">{cont.fee.toLocaleString()}</td>
+                                            <td className="px-4 py-3 text-right text-gray-900">{cont.fee.toLocaleString()}</td>
+                                            <td className="px-4 py-3 text-center text-gray-900">8</td>
+                                            <td className="px-4 py-3 text-right text-gray-900">{(cont.fee * 0.08).toLocaleString()}</td>
+                                            <td className="px-4 py-3 text-right font-medium text-gray-900">{(cont.fee * 1.08).toLocaleString()}</td>
+                                        </tr>
+                                     ))}
+                                 </tbody>
+                             </table>
+                         </div>
+                    </div>
+
+                    {/* Bottom Action / QR Section */}
+                    {!showPaymentQR ? (
+                        <div className="flex justify-end pt-4 border-t border-gray-100 bg-white">
+                             <div className="flex gap-4">
+                                <button 
+                                    onClick={() => setCurrentStep(2)}
+                                    className="px-6 py-2.5 rounded-lg border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition-colors"
+                                >
+                                    Quay lại
+                                </button>
+                                <button 
+                                    onClick={handleConfirmBilling}
+                                    className="px-6 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg shadow-md transition-colors text-sm"
+                                >
+                                    Xác nhận thanh toán
+                                </button>
+                             </div>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="border-t border-gray-100 my-8"></div>
+                            
+                            <div className="flex flex-col lg:flex-row gap-8 animate-fade-in">
+                                {/* Left: Payment Options */}
+                                <div className="w-full lg:w-1/3 space-y-4">
+                                     <h4 className="font-bold text-sm text-gray-700 uppercase mb-2">Phương thức thanh toán</h4>
+                                     <div className="flex items-center p-4 border border-blue-500 bg-blue-50 rounded-lg cursor-pointer shadow-sm relative">
+                                         <div className="bg-white p-1 rounded border border-blue-100 mr-3">
+                                            <QrCode className="w-6 h-6 text-blue-600" />
+                                         </div>
+                                         <span className="font-bold text-blue-800 text-sm">Thanh toán bằng mã QR - BIDV QR</span>
+                                         <div className="absolute right-0 top-0 bottom-0 w-1 bg-blue-500 rounded-r-lg"></div>
+                                     </div>
+
+                                     <div className="flex items-center p-4 border border-transparent hover:bg-gray-50 rounded-lg cursor-pointer transition-colors group">
+                                         <div className="bg-gray-100 p-1 rounded border border-gray-200 mr-3 group-hover:bg-white">
+                                            <QrCode className="w-6 h-6 text-gray-500" />
+                                         </div>
+                                         <span className="font-medium text-gray-600 text-sm">Thanh toán bằng mã QR - MBBank QR</span>
+                                     </div>
+                                </div>
+
+                                {/* Right: QR Display & Details */}
+                                <div className="w-full lg:w-2/3 flex flex-col items-center border-l border-gray-100 pl-0 lg:pl-8">
+                                    <div className="bg-white p-4 rounded-xl shadow-md border border-gray-100 mb-6">
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PAYMENT_DEMO_BIDV" alt="Payment QR" className="w-48 h-48 mix-blend-multiply" />
+                                    </div>
+
+                                    <div className="w-full max-w-lg bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+                                        <div className="grid grid-cols-3 border-b border-gray-100">
+                                            <div className="p-3 bg-gray-50 text-xs font-medium text-gray-500">Ngân hàng</div>
+                                            <div className="col-span-2 p-3 text-sm font-bold text-blue-800">BIDV - Ngân hàng TMCP Đầu tư và Phát triển Việt Nam</div>
+                                        </div>
+                                        <div className="grid grid-cols-3 border-b border-gray-100">
+                                            <div className="p-3 bg-gray-50 text-xs font-medium text-gray-500">Số TK</div>
+                                            <div className="col-span-2 p-3 text-sm font-mono font-medium text-gray-800 flex items-center justify-between">
+                                                ITCITC25112
+                                                <button className="text-gray-400 hover:text-blue-600"><Copy className="w-3.5 h-3.5" /></button>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-3 border-b border-gray-100">
+                                            <div className="p-3 bg-gray-50 text-xs font-medium text-gray-500">Số tiền</div>
+                                            <div className="col-span-2 p-3 text-sm font-bold text-gray-800 flex items-center justify-between">
+                                                {totalAmount.toLocaleString()} VND
+                                                <button className="text-gray-400 hover:text-blue-600"><Copy className="w-3.5 h-3.5" /></button>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-3">
+                                            <div className="p-3 bg-gray-50 text-xs font-medium text-gray-500">Nội dung</div>
+                                            <div className="col-span-2 p-3 text-sm text-gray-600 flex items-center justify-between">
+                                                Thanh toan lenh EMPTY_RETURN
+                                                <button className="text-gray-400 hover:text-blue-600"><Copy className="w-3.5 h-3.5" /></button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-xs text-gray-400 mt-4 mb-2">Sau khi thanh toán, nhấn vào nút bên dưới</p>
+
+                                    <div className="flex gap-4">
                                         <button 
-                                            onClick={() => handleRemoveContainer(cont.id)}
-                                            className="text-red-400 hover:text-red-600 p-1"
+                                            onClick={() => setShowPaymentQR(false)} 
+                                            className="px-6 py-3 border border-gray-200 text-gray-600 font-bold rounded-lg hover:bg-gray-50 text-sm"
                                         >
-                                            <Trash2 className="w-4 h-4" />
+                                            Hủy
                                         </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                )}
-             </div>
+                                        <button 
+                                            onClick={() => setCurrentStep(4)}
+                                            className="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition-all text-sm"
+                                        >
+                                            Tôi đã hoàn tất thanh toán trên App
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </div>
+            )}
 
-             {/* Footer Actions */}
-             <div className="p-4 border-t border-gray-100 bg-white flex justify-between items-center">
-                 <div className="text-xs text-gray-500">
-                     Tổng: <b className="text-gray-800">{containers.length}</b> container
-                 </div>
-                 <button 
-                    disabled={containers.length === 0}
-                    onClick={() => setCurrentStep(2)}
-                    className={`px-6 py-2.5 rounded-lg font-bold text-sm flex items-center transition-all ${
-                        containers.length > 0 
-                        ? 'bg-teal-600 text-white hover:bg-teal-700 shadow-md' 
-                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    }`}
-                 >
-                     Tiếp theo <ArrowRight className="w-4 h-4 ml-2" />
-                 </button>
-             </div>
-          </div>
+            {/* STEP 4: SUCCESS */}
+            {currentStep === 4 && (
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+                    <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner animate-bounce-small">
+                        <CheckCircle className="w-12 h-12 text-green-500" />
+                    </div>
+                    <h2 className="text-3xl font-bold text-gray-800 mb-4">Giao dịch thành công!</h2>
+                    <p className="text-gray-500 max-w-md mx-auto mb-8 leading-relaxed">
+                        Lệnh hạ container rỗng đã được khởi tạo thành công. Mã giao dịch của bạn là <span className="font-mono font-bold text-gray-800">EMP-IN-2023-8899</span>. 
+                        <br/>Vui lòng kiểm tra email để nhận E-Ticket.
+                    </p>
+                    <div className="flex justify-center gap-4">
+                        <button onClick={() => { setCurrentStep(1); setContainers([]); setShowPaymentQR(false); }} className="px-6 py-3 border border-gray-200 bg-white text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition-colors">
+                            Tạo lệnh mới
+                        </button>
+                        <button className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-md transition-colors flex items-center">
+                            <Box className="w-4 h-4 mr-2" />
+                            Xem chi tiết lệnh
+                        </button>
+                    </div>
+                </div>
+            )}
+
         </div>
 
         {/* MODAL ADD CONTAINER */}
@@ -326,29 +538,29 @@ const EmptyContainerInOrder: React.FC = () => {
                     </div>
                     <div className="p-6 space-y-4">
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-1">Hãng khai thác *</label>
+                            <label className="block text-xs font-bold text-gray-900 mb-1">Hãng khai thác *</label>
                             <input 
                                 type="text" 
                                 placeholder="VD: MAERSK, SITC..."
-                                className="w-full p-2 border rounded text-sm uppercase" 
+                                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 uppercase" 
                                 value={newContainer.operator}
                                 onChange={e => setNewContainer({...newContainer, operator: e.target.value})}
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-1">Số Container *</label>
+                            <label className="block text-xs font-bold text-gray-900 mb-1">Số Container *</label>
                             <input 
                                 type="text" 
                                 placeholder="VD: TCNU1234567"
-                                className="w-full p-2 border rounded text-sm uppercase"
+                                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 uppercase"
                                 value={newContainer.containerNo}
                                 onChange={e => setNewContainer({...newContainer, containerNo: e.target.value})}
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-1">Kích cỡ (Size) *</label>
+                            <label className="block text-xs font-bold text-gray-900 mb-1">Kích cỡ (Size) *</label>
                             <select 
-                                className="w-full p-2 border rounded text-sm"
+                                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                                 value={newContainer.isoSize}
                                 onChange={e => setNewContainer({...newContainer, isoSize: e.target.value})}
                             >
@@ -360,224 +572,19 @@ const EmptyContainerInOrder: React.FC = () => {
                         </div>
                     </div>
                     <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 rounded-b-xl">
-                        <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-200 rounded">Hủy</button>
+                        <button onClick={() => setIsModalOpen(false)} className="px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-200 rounded font-bold">Hủy</button>
                         <button 
                             onClick={handleAddContainer} 
-                            className="px-6 py-2 bg-teal-600 text-white text-sm font-bold rounded hover:bg-teal-700 flex items-center"
+                            className="px-6 py-2.5 bg-blue-600 text-white text-sm font-bold rounded hover:bg-blue-700 flex items-center shadow-md"
                         >
-                            <Plus className="w-4 h-4 mr-2" /> Thêm vào danh sách
+                            <Plus className="w-4 h-4 mr-2" /> Thêm
                         </button>
                     </div>
                 </div>
             </div>
         )}
-      </div>
-    );
-  }
-
-  // --- VIEW 2: BILLING ---
-  if (currentStep === 2) {
-      return (
-          <div className="animate-fade-in max-w-4xl mx-auto">
-             {renderProgressBar()}
-             
-             <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                 <div className="p-6 border-b border-gray-100 bg-gray-50">
-                    <h3 className="font-bold text-gray-800 text-lg flex items-center">
-                        <FileText className="w-5 h-5 mr-2 text-teal-600" />
-                        Xác nhận & Tính cước
-                    </h3>
-                 </div>
-
-                 <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-10">
-                     <div className="space-y-6">
-                        <h4 className="font-bold text-sm uppercase text-gray-500 border-b border-gray-100 pb-2">
-                            Thông tin hóa đơn
-                        </h4>
-                        <div>
-                            <label className="block text-xs font-bold text-gray-700 mb-1">Mã số thuế</label>
-                            <div className="flex gap-2">
-                                <input 
-                                    type="text" 
-                                    value={taxId}
-                                    onChange={(e) => setTaxId(e.target.value)}
-                                    disabled={!isChangingTax}
-                                    className={`flex-grow p-2.5 border rounded text-sm outline-none font-mono ${isChangingTax ? 'bg-white border-blue-500 ring-1 ring-blue-200' : 'bg-gray-50 border-gray-200'}`}
-                                />
-                                {isChangingTax ? (
-                                    <button onClick={handleUpdateTaxInfo} className="px-4 bg-green-600 text-white rounded text-xs font-bold hover:bg-green-700">Check</button>
-                                ) : (
-                                    <button onClick={() => setIsChangingTax(true)} className="px-4 bg-gray-200 text-gray-600 rounded text-xs font-bold hover:bg-gray-300 flex items-center"><RefreshCw className="w-3 h-3 mr-1" /> Đổi MST</button>
-                                )}
-                            </div>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-bold text-gray-700 mb-1">Tên công ty</label>
-                            <div className="p-3 bg-gray-50 border border-gray-200 rounded text-sm font-medium text-gray-700">{companyName}</div>
-                        </div>
-                     </div>
-
-                     <div className="space-y-6">
-                        <h4 className="font-bold text-sm uppercase text-gray-500 border-b border-gray-100 pb-2">
-                            Tổng hợp chi phí
-                        </h4>
-                        <div className="bg-teal-50 p-4 rounded-lg space-y-3">
-                            <div className="flex justify-between text-sm"><span className="text-gray-600">Số lượng container</span><span className="font-bold">{containers.length}</span></div>
-                            <div className="flex justify-between text-sm"><span className="text-gray-600">Phí dịch vụ</span><span className="font-mono">{totalAmount.toLocaleString()} ₫</span></div>
-                            <div className="flex justify-between text-sm"><span className="text-gray-600">VAT (8%)</span><span className="font-mono">{(totalAmount * 0.08).toLocaleString()} ₫</span></div>
-                            <div className="border-t border-teal-200 pt-3 flex justify-between items-center">
-                                <span className="text-teal-900 font-bold uppercase">Tổng thanh toán</span>
-                                <span className="text-xl font-bold text-teal-700 font-mono">{(totalAmount * 1.08).toLocaleString()} ₫</span>
-                            </div>
-                        </div>
-                        <div className="flex flex-col gap-3">
-                             <div className="flex gap-3">
-                                <button onClick={() => setCurrentStep(1)} className="flex-1 py-3 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-bold border border-gray-200">Quay lại</button>
-                                <button className="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-lg text-sm font-bold shadow-md flex items-center justify-center">
-                                    <Save className="w-4 h-4 mr-2" /> Lưu (Chưa TT)
-                                </button>
-                             </div>
-                             <button onClick={() => setCurrentStep(3)} className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg text-sm font-bold shadow-md uppercase">
-                                 Xác nhận thanh toán
-                             </button>
-                        </div>
-                     </div>
-                 </div>
-             </div>
-          </div>
-      );
-  }
-
-  // --- VIEW 3: PAYMENT FORM & OTP ---
-  if (currentStep === 3) {
-      return (
-        <div className="animate-fade-in max-w-2xl mx-auto">
-             {renderProgressBar()}
-             <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
-                <h3 className="font-bold text-gray-800 text-lg flex items-center mb-6">
-                    <CreditCard className="w-6 h-6 mr-2 text-teal-600" />
-                    Thanh toán
-                </h3>
-                
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6 flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-600">Số tiền:</span>
-                    <span className="text-xl font-bold text-teal-700 font-mono">{(totalAmount * 1.08).toLocaleString()} ₫</span>
-                </div>
-
-                <div className="space-y-4">
-                    <div>
-                        <label className="block text-xs font-bold text-gray-500 mb-1">Số thẻ</label>
-                        <input type="text" placeholder="0000 0000 0000 0000" className="w-full p-3 border rounded-lg font-mono text-lg outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-1">Ngày hết hạn</label>
-                            <input type="text" placeholder="MM/YY" className="w-full p-3 border rounded-lg font-mono outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500" />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-1">CVV</label>
-                            <input type="text" placeholder="123" maxLength={3} className="w-full p-3 border rounded-lg font-mono outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500" />
-                        </div>
-                    </div>
-                </div>
-
-                <button 
-                    onClick={handlePayment}
-                    className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-lg shadow-md mt-8 transition-colors text-sm uppercase tracking-wide"
-                >
-                    Thanh toán ngay
-                </button>
-             </div>
-
-             {/* OTP MODAL */}
-            {showOtpInput && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 animate-scale-in">
-                        <div className="text-center mb-6">
-                            <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Smartphone className="w-8 h-8 text-teal-600" />
-                            </div>
-                            <h3 className="text-lg font-bold text-gray-800">Xác thực OTP</h3>
-                            <p className="text-sm text-gray-500 mt-1">Mã xác thực đã được gửi đến SĐT của bạn</p>
-                        </div>
-
-                        <div className="flex gap-2 justify-center mb-6">
-                            {[0,1,2,3,4,5].map((i) => (
-                                <input 
-                                    key={i}
-                                    type="text" 
-                                    maxLength={1}
-                                    className="w-10 h-12 border border-gray-300 rounded text-center text-xl font-bold focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
-                                />
-                            ))}
-                        </div>
-
-                        <button 
-                            onClick={verifyOtp}
-                            className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-lg transition-colors"
-                        >
-                            Xác nhận
-                        </button>
-                        <button 
-                            onClick={() => setShowOtpInput(false)}
-                            className="w-full mt-3 text-gray-500 text-sm hover:text-gray-800"
-                        >
-                            Hủy bỏ
-                        </button>
-                    </div>
-                </div>
-            )}
-        </div>
-      );
-  }
-
-  // --- VIEW 4: SUCCESS ---
-  if (currentStep === 4) {
-      return (
-          <div className="animate-fade-in max-w-2xl mx-auto text-center pt-10">
-              <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-green-100">
-                  <CheckCircle className="w-12 h-12 text-green-600" />
-              </div>
-              <h2 className="text-3xl font-bold text-gray-800 mb-2">Đăng ký thành công!</h2>
-              <p className="text-gray-500 mb-8 max-w-lg mx-auto">
-                  Lệnh hạ container rỗng đã được ghi nhận vào hệ thống.
-                  <br/>Vui lòng mang theo lệnh điện tử khi đến cảng.
-              </p>
-              
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mb-8 text-left max-w-md mx-auto">
-                  <div className="flex justify-between border-b border-gray-100 pb-3 mb-3">
-                      <span className="text-gray-500 text-sm">Loại lệnh</span>
-                      <span className="font-bold text-gray-800">HẠ RỖNG (EMPTY RETURN)</span>
-                  </div>
-                  <div className="flex justify-between border-b border-gray-100 pb-3 mb-3">
-                      <span className="text-gray-500 text-sm">Số lượng</span>
-                      <span className="font-medium text-gray-800">{containers.length} Container</span>
-                  </div>
-                   <div className="flex justify-between">
-                      <span className="text-gray-500 text-sm">Tổng tiền</span>
-                      <span className="font-bold text-teal-600">{(totalAmount * 1.08).toLocaleString()} ₫</span>
-                  </div>
-              </div>
-
-              <div className="flex gap-4 justify-center">
-                  <button 
-                    onClick={() => {
-                        setCurrentStep(1);
-                        setContainers([]);
-                    }}
-                    className="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-lg hover:bg-gray-200 transition-colors"
-                  >
-                      Tạo lệnh mới
-                  </button>
-                  <button className="px-6 py-3 bg-teal-600 text-white font-bold rounded-lg hover:bg-teal-700 shadow-md transition-colors">
-                      Xem E-Ticket
-                  </button>
-              </div>
-          </div>
-      );
-  }
-
-  return null;
+    </div>
+  );
 };
 
 export default EmptyContainerInOrder;
