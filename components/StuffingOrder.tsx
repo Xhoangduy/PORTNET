@@ -358,15 +358,13 @@ const StuffingOrder: React.FC = () => {
 
                     {/* SECTION 2: OWNER */}
                     <div className="mb-6">
-                         <div className="flex items-center gap-4 mb-6">
-                             <div className="flex-grow h-px bg-yellow-400"></div>
-                             <h3 className="text-yellow-600 font-bold text-sm uppercase">Thông tin chủ hàng</h3>
-                             <div className="flex-grow h-px bg-yellow-400"></div>
-                         </div>
+                         <h3 className="text-blue-700 font-bold text-sm uppercase mb-4 pb-2 border-b border-gray-100 flex items-center">
+                             <User className="w-4 h-4 mr-2" /> 2. Thông tin chủ hàng
+                         </h3>
                          
                          <div className="space-y-4">
                              <div>
-                                <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Chủ hàng <span className="text-red-500">*</span></label>
+                                <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Tên chủ hàng <span className="text-red-500">*</span></label>
                                 <input 
                                     type="text" 
                                     value={ownerInfo.name}
@@ -378,7 +376,7 @@ const StuffingOrder: React.FC = () => {
 
                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                  <div>
-                                    <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Tên người đại diện <span className="text-red-500">*</span></label>
+                                    <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Người đại diện <span className="text-red-500">*</span></label>
                                     <input 
                                         type="text" 
                                         value={ownerInfo.rep}
@@ -401,7 +399,7 @@ const StuffingOrder: React.FC = () => {
                              <div>
                                 <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5">Ghi chú</label>
                                 <textarea 
-                                    rows={1}
+                                    rows={2}
                                     value={ownerInfo.note}
                                     onChange={(e) => setOwnerInfo({...ownerInfo, note: e.target.value})}
                                     className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none"
