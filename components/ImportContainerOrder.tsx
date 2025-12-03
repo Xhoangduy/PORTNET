@@ -140,7 +140,7 @@ const ImportContainerOrder: React.FC = () => {
                     
                     {/* SECTION 1: LỆNH & VẬN CHUYỂN */}
                     <div className="mb-8">
-                         <h3 className="text-teal-700 font-bold text-sm uppercase mb-4 pb-2 border-b border-gray-100 flex items-center">
+                         <h3 className="text-blue-700 font-bold text-sm uppercase mb-4 pb-2 border-b border-gray-100 flex items-center">
                              <Layers className="w-4 h-4 mr-2" /> 1. Thông tin lệnh giao hàng
                          </h3>
                          
@@ -229,7 +229,7 @@ const ImportContainerOrder: React.FC = () => {
 
                     {/* SECTION 2: CHỦ HÀNG */}
                     <div className="mb-6">
-                         <h3 className="text-teal-700 font-bold text-sm uppercase mb-4 pb-2 border-b border-gray-100 flex items-center">
+                         <h3 className="text-blue-700 font-bold text-sm uppercase mb-4 pb-2 border-b border-gray-100 flex items-center">
                              <User className="w-4 h-4 mr-2" /> 2. Thông tin chủ hàng
                          </h3>
                          
