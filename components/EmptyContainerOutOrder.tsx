@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { 
   CreditCard, CheckCircle, ArrowRight, User, Truck, Ship, 
   FileText, Calendar, Box, Smartphone, ShieldCheck, RefreshCw,
-  Info, Check, ChevronRight, QrCode, Copy, Layers
+  Info, Check, ChevronRight, QrCode, Copy, Layers, Plus, Trash2
 } from 'lucide-react';
 
 const EmptyContainerOutOrder: React.FC = () => {
@@ -54,7 +54,7 @@ const EmptyContainerOutOrder: React.FC = () => {
 
   const steps = [
       { id: 1, title: 'Thông tin lệnh' },
-      { id: 2, title: 'Chi tiết yêu cầu' },
+      { id: 2, title: 'Danh sách container' },
       { id: 3, title: 'Tính cước & Thanh toán' },
       { id: 4, title: 'Hoàn tất' },
   ];
